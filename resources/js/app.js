@@ -40,7 +40,6 @@ async function initControls() {
     loginForm.submit_button.onclick = async (e) => {
         try {
             let response = await network.login(loginForm.email.value, loginForm.password.value)
-            console.log(response)
             loginForm.responseLabel.value = response.statusText
         } catch(e) {
             loginForm.responseLabel.value = e

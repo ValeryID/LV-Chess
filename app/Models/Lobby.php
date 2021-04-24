@@ -57,6 +57,8 @@ class Lobby extends Model
     {
         if($this->playersReady()) {
             $game = Game::make($this);
+            $this->started = true;
+            $this->save();
             //$this->delete();
 
             return $game;

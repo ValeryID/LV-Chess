@@ -71,6 +71,7 @@ export default class Game {
 
     tryMove(algebraicStart, algebraicEnd) {
         let move = this.engine.move({ from: algebraicStart, to: algebraicEnd })
+        console.log(move)
         if(move) this.engine.undo()
         return move
     }

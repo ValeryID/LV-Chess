@@ -26,13 +26,15 @@ class LobbyController extends Controller
     public function startLobby(Request $request, Lobby $lobby)
     {
         $authorized = Gate::allows('lobby-start-game', $lobby);
+        if(!$authorized) abort(403);
+        if($lobby->started) abort(409);
 
-        $game = $authorized ? $lobby->startGame() : false;
-        $responseCode = $game ? 200 : ($authorized ? 400 : 403);
+        $game = $lobby->startGame();
+        if(!$game) abort(400);
 
-        if($game) LobbyEvent::dispatch($lobby, 'started', $game);
+        LobbyEvent::dispatch($lobby, 'started', $game);
 
-        return response($game, $responseCode);
+        return response($game);
     }
 
     public function list(Request $request)

@@ -1951,22 +1951,21 @@ function _initControls() {
 
                       case 3:
                         response = _context2.sent;
-                        console.log(response);
                         loginForm.responseLabel.value = response.statusText;
-                        _context2.next = 11;
+                        _context2.next = 10;
                         break;
 
-                      case 8:
-                        _context2.prev = 8;
+                      case 7:
+                        _context2.prev = 7;
                         _context2.t0 = _context2["catch"](0);
                         loginForm.responseLabel.value = _context2.t0;
 
-                      case 11:
+                      case 10:
                       case "end":
                         return _context2.stop();
                     }
                   }
-                }, _callee2, null, [[0, 8]]);
+                }, _callee2, null, [[0, 7]]);
               }));
 
               return function (_x) {
@@ -2266,6 +2265,7 @@ var Game = /*#__PURE__*/function () {
         from: algebraicStart,
         to: algebraicEnd
       });
+      console.log(move);
       if (move) this.engine.undo();
       return move;
     }

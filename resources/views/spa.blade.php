@@ -26,6 +26,7 @@
                     <label>lobby</label><input name='lobby' type='text'>
                     <label>hostColor</label><input name='hostColor' type='text' value='w'>
                     <label>public</label><input name='public' type='text' value='true'>
+                    <label>timeLimit</label><input name='timeLimit' type='number' min='0' value='900'>
                     <br>
                     <button name="join_button" type="button">join</button>
                     <button name="make_button" type="button">make</button>

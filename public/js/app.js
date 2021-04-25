@@ -2016,7 +2016,7 @@ function _initControls() {
                     switch (_context4.prev = _context4.next) {
                       case 0:
                         _context4.next = 2;
-                        return network.makeLobby(lobbyForm.hostColor.value, lobbyForm["public"].value);
+                        return network.makeLobby(lobbyForm.hostColor.value, lobbyForm["public"].value, lobbyForm.timeLimit.value);
 
                       case 2:
                         response = _context4.sent;
@@ -4520,12 +4520,13 @@ var Network = /*#__PURE__*/function () {
     }
   }, {
     key: "makeLobby",
-    value: function makeLobby(hostColor, ispublic) {
+    value: function makeLobby(hostColor, isPublic, timeLimit) {
       var _this5 = this;
 
       var promise = axios.post('/lobby/make', {
         hostColor: hostColor,
-        "public": ispublic
+        "public": isPublic,
+        timeLimit: timeLimit
       });
       promise.then(function (response) {
         _this5.lobbyId = response.data.id;

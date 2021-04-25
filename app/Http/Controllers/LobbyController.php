@@ -12,7 +12,7 @@ class LobbyController extends Controller
 {
     public function makeLobby(Request $request)
     {
-        $params = $request->only('public', 'hostColor');
+        $params = $request->only('public', 'hostColor', 'timeLimit');
         $lobby = Lobby::make($request->user(), $params);
 
         return response($lobby, $lobby !== null ? 200 : 400);

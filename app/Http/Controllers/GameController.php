@@ -28,9 +28,15 @@ class GameController extends Controller
 
     public function getColor(Request $request, Game $game)
     {
-        $color = $game->playerColor($request->user());
+        $color = $game->getPlayerColor($request->user());
         if($color === null) abort(403);
         
         return response($color);
+    }
+
+    public function timeOver(Request $request, Game $game, string $color)
+    {
+        $user = $game->colorToUser($color);
+        if($game->timeCheck($user)) GameEvent::dispatch($game, 'result', $color === 'w' ? 'b' : 'w');
     }
 }

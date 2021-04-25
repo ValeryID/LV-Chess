@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Carbon;
+
 use App\Models\Lobby;
 use App\Models\GameMove;
 
@@ -42,6 +45,45 @@ class Game extends Model
         }
     }
 
+    public function colorToUser(string $color): ?User
+    {
+        if(!in_array($color, ['w', 'b'])) return null;
+        return $color === 'w' ? User::find($this->white_player_id) : User::find($this->black_player_id);
+    }
+
+    protected function countPlayerElapsedTime(User $user): int
+    {
+        $moves = $this->moves->sortBy('id');
+
+        $elapsedTime = 0;
+        $color = $this->getPlayerColor($user);
+        for($i = (int)($color === 'b'); $i < $moves->count(); $i += 2) {
+            $carbonDate = $moves->get($i)->created_at;
+            $carbonDatePrev = $i === 0 ? $this->created_at : $moves->get($i - 1)->created_at;
+            $elapsedTime += $carbonDate->diffInSeconds($carbonDatePrev); 
+        }
+
+        if($this->isPlayersTurn($user)) {
+            $elapsedTime += Carbon::now()->diffInSeconds($moves->last()->created_at);
+        }
+
+        return $elapsedTime;
+    }
+
+    public function isPlayerTimeOver(User $user): bool
+    {
+        return $this->countPlayerElapsedTime($user) > $this->lobby->time_limit;
+    }
+
+    public function timeCheck(User $user): bool
+    {
+        if($this->isPlayerTimeOver($user)) {
+            return $this->playerSurrender($user);
+        } else {
+            return false;
+        }
+    }
+
     public function isPlayersTurn(User $user): bool
     {
         return $this->turn === 'w' && $this->white_player_id === $user->id || 
@@ -73,12 +115,35 @@ class Game extends Model
         }
     }
 
-    public function playerColor(User $user): ?string
+    public function getPlayerColor(User $user): ?string
     {
         switch($user->id) {
             case $this->white_player_id: return 'w';
             case $this->black_player_id: return 'b';
             default: return null;
         }
+    }
+
+    public function lobby()
+    {
+        return $this->hasOne(Lobby::class);
+    }
+
+    public function moves()
+    {
+        return $this->hasMany(GameMove::class);
+    }
+
+    protected function playerMoves(User $user): Collection
+    {
+        $color = $this->getPlayerColor($user);
+        $moves = $this->moves->sortBy('id');
+        $playerMoves = new Collection();
+
+        for($i = (int)($color === 'b'); $i < $moves->count(); $i += 2) {
+            $playerMoves->push($moves->get($i));
+        }
+
+        return $playerMoves;
     }
 }

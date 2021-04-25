@@ -80,8 +80,12 @@ export default class Network {
         return promise
     }
 
-    makeLobby(hostColor, ispublic) {
-        let promise = axios.post('/lobby/make', {hostColor: hostColor, public: ispublic})
+    makeLobby(hostColor, isPublic, timeLimit) {
+        let promise = axios.post('/lobby/make', {
+            hostColor: hostColor, 
+            public: isPublic, 
+            timeLimit: timeLimit
+        })
         promise.then((response) => {
             this.lobbyId = response.data.id
             this.listenLobbyChannel(this.lobbyId)

@@ -56,7 +56,10 @@ async function initControls() {
     }
 
     lobbyForm.make_button.onclick = async (e) => {
-            let response = await network.makeLobby(lobbyForm.hostColor.value, lobbyForm.public.value)
+            let response = await network.makeLobby(
+                lobbyForm.hostColor.value, 
+                lobbyForm.public.value,
+                lobbyForm.timeLimit.value)
         try {
             let lobby = response.data
             lobbyForm.responseLabel.value = response.statusText

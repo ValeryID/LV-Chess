@@ -20,8 +20,9 @@ class Lobby extends Model
     {
         $lobby = new self();
         $lobby->host_id = $user->id;
-        $lobby->public = isset($params['public']) ? $params['public'] === 'true' : true;
-        $lobby->host_color = isset($params['hostColor']) ? $params['hostColor'] : 'w';
+        $lobby->public = $params['public'] ?? config('game.lobby.default.public');
+        $lobby->host_color = $params['hostColor'] ?? config('game.lobby.default.host_color');
+        $lobby->time_limit = $params['timeLimit'] ?? config('game.lobby.default.time_limit');
 
         try {
             $lobby->save();

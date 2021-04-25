@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddStatusToLobbiesTable extends Migration
+class AddTimelimitToLobbiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddStatusToLobbiesTable extends Migration
     public function up()
     {
         Schema::table('lobbies', function (Blueprint $table) {
-            $table->boolean('started')->default(false);
+            $table->integer('time_limit')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddStatusToLobbiesTable extends Migration
     public function down()
     {
         Schema::table('lobbies', function (Blueprint $table) {
-            $table->dropColumn('started');
+            $table->dropColumn('time_limit');
         });
     }
 }

@@ -18,8 +18,8 @@ class CreateLobbiesTable extends Migration
             $table->unsignedBigInteger('host_id');
             $table->unsignedBigInteger('guest_id')->nullable();
 
-            $table->enum('host_color', ['w', 'b']);
-            $table->boolean('public');
+            $table->enum('host_color', ['w', 'b'])->nullable();
+            $table->boolean('public')->nullable();
             
             $table->timestamps();
 

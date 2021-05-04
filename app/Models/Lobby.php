@@ -13,7 +13,7 @@ class Lobby extends Model
 
     protected $casts = [
         'host_id' => 'integer',
-        'guest_id' => 'integer'
+        'guest_id' => 'integer',
     ];
 
     public static function make(User $user, array $params): ?Lobby
@@ -54,6 +54,11 @@ class Lobby extends Model
         return $this->guest_id !== null;
     }
 
+    public function playerInGame(User $user): bool
+    {
+        return $user->id == $this->white_player_id || $user->id == $this->black_player_id;
+    }
+
     public function startGame(): ?Game
     {
         if($this->playersReady()) {
@@ -77,5 +82,10 @@ class Lobby extends Model
         } catch(\Illuminate\Database\QueryException $e) {
             return false;
         }
+    }
+
+    public function userInLobby(User $user): bool
+    {
+        return in_array($user->id, [$this->guest_id, $this->host_id]);
     }
 }

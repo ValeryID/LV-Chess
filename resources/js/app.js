@@ -77,11 +77,31 @@ async function initControls() {
             lobbyForm.responseLabel.value = e
         }
     }
+
+    chatForm.send_button.addEventListener('click', async (e) => {
+        network.sendChatMessage(chatForm.message.value)
+    })
+
+    chatForm.message.addEventListener('keyup', (e) => {
+        if(e.keyCode === 13) {
+            e.preventDefault()
+            network.sendChatMessage(chatForm.message.value)
+            return false
+        }
+    })
+}
+
+function initListeners() {
+    network.listen('LobbyEvent', 'chatMessage', (event)=>{
+        document.querySelector('#chat_messages').innerHTML += 
+        `<b>${event.message.name}</b>: ${event.message.text}<br>`;
+    })
 }
 
 async function init() {
+    await initGame()
     initControls()
-    let game = await initGame()
+    initListeners()
 }
 
 document.addEventListener("DOMContentLoaded", init);

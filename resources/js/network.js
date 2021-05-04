@@ -12,7 +12,8 @@ export default class Network {
     init() {
         this.echo.channel(`lobbies`).listen('LobbyEvent', (e)=>console.log(e))
     }
-
+    
+    //this.network.listen('GameEvent', 'move', (event)=>this.makeMove(event.message))
     listen(eventClass, type, callback) {
         this.listeners.push({
             class: eventClass,
@@ -100,5 +101,9 @@ export default class Network {
 
     sendMove(algebraic) {
         return axios.post(`/game/${this.gameId}/move`, { algebraic: algebraic })
+    }
+
+    sendChatMessage(message) {
+        return axios.post(`/lobby/${this.lobbyId}/chat`, { message: message })
     }
 }

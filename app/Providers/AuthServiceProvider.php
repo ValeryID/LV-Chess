@@ -30,5 +30,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('lobby-start-game', function (User $user, Lobby $lobby) {
             return $lobby->host()->is($user);
         });
+
+        Gate::define('lobby-chatting', function (User $user, Lobby $lobby) {
+            return $lobby->userInLobby($user);
+        });
     }
 }

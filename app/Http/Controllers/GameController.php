@@ -36,7 +36,9 @@ class GameController extends Controller
 
     public function timeOver(Request $request, Game $game, string $color)
     {
-        $user = $game->colorToUser($color);
-        if($game->timeCheck($user)) GameEvent::dispatch($game, 'result', $color === 'w' ? 'b' : 'w');
+        $result = $game->timeCheck( $game->colorToUser($color) );
+        if($result) GameEvent::dispatch($game, 'result', $color === 'w' ? 'b' : 'w');
+
+        return $result;
     }
 }

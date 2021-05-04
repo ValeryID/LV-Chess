@@ -1933,10 +1933,10 @@ function initControls() {
 }
 
 function _initControls() {
-  _initControls = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee6() {
-    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee6$(_context6) {
+  _initControls = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee7() {
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee7$(_context7) {
       while (1) {
-        switch (_context6.prev = _context6.next) {
+        switch (_context7.prev = _context7.next) {
           case 0:
             loginForm.submit_button.onclick = /*#__PURE__*/function () {
               var _ref = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(e) {
@@ -2077,14 +2077,48 @@ function _initControls() {
               };
             }();
 
-          case 4:
+            chatForm.send_button.addEventListener('click', /*#__PURE__*/function () {
+              var _ref5 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee6(e) {
+                return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee6$(_context6) {
+                  while (1) {
+                    switch (_context6.prev = _context6.next) {
+                      case 0:
+                        network.sendChatMessage(chatForm.message.value);
+
+                      case 1:
+                      case "end":
+                        return _context6.stop();
+                    }
+                  }
+                }, _callee6);
+              }));
+
+              return function (_x5) {
+                return _ref5.apply(this, arguments);
+              };
+            }());
+            chatForm.message.addEventListener('keyup', function (e) {
+              if (e.keyCode === 13) {
+                e.preventDefault();
+                network.sendChatMessage(chatForm.message.value);
+                return false;
+              }
+            });
+
+          case 6:
           case "end":
-            return _context6.stop();
+            return _context7.stop();
         }
       }
-    }, _callee6);
+    }, _callee7);
   }));
   return _initControls.apply(this, arguments);
+}
+
+function initListeners() {
+  network.listen('LobbyEvent', 'chatMessage', function (event) {
+    document.querySelector('#chat_messages').innerHTML += "<b>".concat(event.message.name, "</b>: ").concat(event.message.text, "<br>");
+  });
 }
 
 function init() {
@@ -2092,25 +2126,24 @@ function init() {
 }
 
 function _init() {
-  _init = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee7() {
-    var game;
-    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee7$(_context7) {
+  _init = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee8() {
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee8$(_context8) {
       while (1) {
-        switch (_context7.prev = _context7.next) {
+        switch (_context8.prev = _context8.next) {
           case 0:
-            initControls();
-            _context7.next = 3;
+            _context8.next = 2;
             return initGame();
 
-          case 3:
-            game = _context7.sent;
+          case 2:
+            initControls();
+            initListeners();
 
           case 4:
           case "end":
-            return _context7.stop();
+            return _context8.stop();
         }
       }
-    }, _callee7);
+    }, _callee8);
   }));
   return _init.apply(this, arguments);
 }
@@ -4413,7 +4446,8 @@ var Network = /*#__PURE__*/function () {
       this.echo.channel("lobbies").listen('LobbyEvent', function (e) {
         return console.log(e);
       });
-    }
+    } //this.network.listen('GameEvent', 'move', (event)=>this.makeMove(event.message))
+
   }, {
     key: "listen",
     value: function listen(eventClass, type, callback) {
@@ -4545,6 +4579,13 @@ var Network = /*#__PURE__*/function () {
     value: function sendMove(algebraic) {
       return axios.post("/game/".concat(this.gameId, "/move"), {
         algebraic: algebraic
+      });
+    }
+  }, {
+    key: "sendChatMessage",
+    value: function sendChatMessage(message) {
+      return axios.post("/lobby/".concat(this.lobbyId, "/chat"), {
+        message: message
       });
     }
   }]);

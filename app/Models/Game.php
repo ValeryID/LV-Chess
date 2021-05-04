@@ -16,12 +16,13 @@ class Game extends Model
 
     protected $casts = [
         'white_player_id' => 'integer',
-        'black_player_id' => 'integer'
+        'black_player_id' => 'integer',
     ];
 
     public static function make(Lobby $lobby): ?Game
     {
         $game = new self();
+        $game->lobby_id = $lobby->id;
         $game->white_player_id = $lobby->host_color === 'w' ? $lobby->host_id : $lobby->guest_id;
         $game->black_player_id = $lobby->host_color === 'b' ? $lobby->host_id : $lobby->guest_id;
         
@@ -103,7 +104,8 @@ class Game extends Model
 
     public function playerInGame(User $user): bool
     {
-        return $user->id == $this->white_player_id || $user->id == $this->black_player_id;
+        //return $this->lobby()->userInLobby($user);
+        return in_array($user->id, [$this->white_player_id, $this->black_player_id]);
     }
 
     public function playerSurrender(User $user): bool
@@ -124,9 +126,9 @@ class Game extends Model
         }
     }
 
-    public function lobby()
+    public function lobby(): ?Lobby
     {
-        return $this->hasOne(Lobby::class);
+        return Lobby::find($this->lobby_id);
     }
 
     public function moves()

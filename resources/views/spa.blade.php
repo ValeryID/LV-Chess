@@ -14,7 +14,6 @@
     <body>
         <div class='horizontal-layout'>
             <canvas width=600 height=600 id="game_board"></canvas>
-            <div class='lobby-list'></div>
             <div class='vertical-layout'>
                 <form name='loginForm'>
                     <label>email</label><input name='email' type='text' value='test@mail.com'>
@@ -36,6 +35,14 @@
                 <form name='gameForm'>
                     <label>Game</label><input type='text' name='game' disabled='true'>
                     <input name='responseLabel' type='text' disabled='true'>
+                </form>
+            </div>
+            <div class='chat'>
+                <div id='chat_messages' class='chat-messages'></div>
+                <form name='chatForm'>
+                    <input name='message' type='text'>
+                    <input style="display:none" name='fj' type='text'>
+                    <button name="send_button" type="button">Send</button>
                 </form>
             </div>
         </div>

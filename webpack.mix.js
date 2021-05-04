@@ -15,3 +15,14 @@ mix.js('resources/js/app.js', 'public/js')
     .postCss('resources/css/app.css', 'public/css', [
         //
     ]);
+
+mix.webpackConfig(webpack => {
+    return {
+        plugins: [
+            new webpack.DefinePlugin({
+                __VUE_OPTIONS_API__: JSON.stringify(false),
+                __VUE_PROD_DEVTOOLS__ : JSON.stringify(false)
+                })
+        ]
+    }
+});

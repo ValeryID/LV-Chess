@@ -51,12 +51,9 @@ textarea {
 }
 
 .chat form input {
+    display: inline;
     margin-left: 5px;
     width: 85%;
-}
-
-.chat form input {
-    display: inline;
 }
 
 .chat-messages {

@@ -12,6 +12,12 @@
     </head>
 
     <body>
+        @verbatim
+        <div id="app">
+            <input type="text" v-on:input="setMessage" />
+            <p>{{message}}</p>
+        </div>
+        @endverbatim
         <div class='horizontal-layout'>
             <canvas width=600 height=600 id="game_board"></canvas>
             <div class='vertical-layout'>

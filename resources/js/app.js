@@ -1,4 +1,5 @@
 require('./bootstrap');
+let Vue = require('vue/dist/vue.esm-bundler.js');
 
 import Echo from 'laravel-echo';
 import Renderer from './renderer';
@@ -98,7 +99,23 @@ function initListeners() {
     })
 }
 
+function initVue() {
+    Vue.createApp({
+        data() {
+          return {
+            message: 'Hello Vue 3!'
+          }
+        },
+        methods: {
+          setMessage(event) {
+            this.message = event.target.value;
+          }
+        }
+      }).mount('#app');
+}
+
 async function init() {
+    initVue();
     await initGame()
     initControls()
     initListeners()

@@ -1,3 +1,7 @@
+body {
+  font: 20px sans-serif;
+}
+
 form {
   margin: 10px;
   padding: 5px;
@@ -89,8 +93,8 @@ textarea {
   border-radius: 6px;
   display: block;
   width: 230px;
-  height: 118px;
-  padding: 5px 10px 10px 10px;
+  height: 121px;
+  padding: 3px 10px 10px 10px;
   position: relative;
 }
 .login-form div {
@@ -102,13 +106,14 @@ textarea {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   width: 230px;
-  height: 65px;
+  height: 68px;
   padding: 5px 10px 10px 10px;
   top: -3px;
   left: -3px;
 }
 .login-form input {
   all: initial;
+  font: 20px sans-serif;
   position: relative;
   z-index: 100;
   background-color: #f4ffeb;
@@ -128,14 +133,14 @@ textarea {
 }
 .login-form button {
   all: initial;
+  font: 20px sans-serif;
   width: 80px;
   text-align: center;
   cursor: pointer;
   border-radius: 6px;
   padding: 5px;
-  margin-top: 23px;
+  margin-top: 18px;
   float: right;
-  position: relative;
   background-color: #92bbf1;
   border: 2px solid #92bbf1;
 }

@@ -1,9 +1,9 @@
 <template>
     <div class='lobby-list'>
         <div v-if='lobbies.length > 0' v-for='lobby in lobbies' @click='lobbySelected(lobby)' class='lobby-list-item'>
-            {{`${lobby.id} | ${1 + (lobby.guest_id !== null)}/2 | 
-            Host color:"${lobby.host_color}" | 
-            Time limit:${lobby.time_limit}`}}
+            {{`${lobby.id}. ${1 + (lobby.guest_id !== null)}/2`}}<br>
+            {{`Host color:"${lobby.host_color}"`}}<br>
+            {{`Time limit:${lobby.time_limit}`}}
         </div>
         <b v-else>No lobbies found</b>
     </div>

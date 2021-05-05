@@ -14,7 +14,7 @@ class AddStatusToLobbiesTable extends Migration
     public function up()
     {
         Schema::table('lobbies', function (Blueprint $table) {
-            $table->boolean('started')->default(false);
+            $table->enum('started', ['true', 'false'])->default('false');
         });
     }
 

@@ -63,7 +63,7 @@ class Lobby extends Model
     {
         if($this->playersReady()) {
             $game = Game::make($this);
-            $this->started = true;
+            $this->started = 'true';
             $this->save();
             //$this->delete();
 
@@ -82,6 +82,11 @@ class Lobby extends Model
         } catch(\Illuminate\Database\QueryException $e) {
             return false;
         }
+    }
+
+    public function isStarted(): bool
+    {
+        return $this->started === 'true';
     }
 
     public function userInLobby(User $user): bool

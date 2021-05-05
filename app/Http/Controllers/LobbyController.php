@@ -26,7 +26,7 @@ class LobbyController extends Controller
     public function startLobby(Request $request, Lobby $lobby)
     {
         if(!Gate::allows('lobby-start-game', $lobby)) abort(403);
-        if($lobby->started) abort(409);
+        if($lobby->isStarted()) abort(409);
 
         $game = $lobby->startGame();
         if(!$game) abort(400);
@@ -37,8 +37,8 @@ class LobbyController extends Controller
     }
 
     public function list(Request $request)
-    {
-        return Lobby::where('public', 1)->where('guest_id', null)->get();
+    {//->where('guest_id', null)
+        return Lobby::where('public', 'true')->where('started', 'false')->get();
     }
 
     public function sendChatMessage(Request $request, Lobby $lobby)

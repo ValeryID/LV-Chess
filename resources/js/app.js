@@ -6,12 +6,25 @@ import Renderer from './renderer';
 import Game from './game';
 import Chess from './lib/chess';
 import Network from './network';
-import testComponent from './components/test.vue';
+import lobbyListComponent from './components/LobbyList.vue';
+import loginComponent from './components/Login.vue';
 
 window.Pusher = require('pusher-js');
 
-
 let network;
+
+function initNetwork() {
+    network = new Network(
+        new Echo({
+            broadcaster: 'pusher',
+            key: 'wbe54yw45yw3',
+            wsHost: window.location.hostname,
+            wsPort: 6001,
+            forceTLS: false,
+            disableStats: true,
+        })
+    )
+}
 
 async function initGame() {
     let canvas = document.querySelector('#game_board')
@@ -24,17 +37,6 @@ async function initGame() {
 
     let renderer = new Renderer(canvas, spriteSheet)
     let chess = new Chess()
-
-    network = new Network(
-        new Echo({
-            broadcaster: 'pusher',
-            key: 'wbe54yw45yw3',
-            wsHost: window.location.hostname,
-            wsPort: 6001,
-            forceTLS: false,
-            disableStats: true,
-        })
-    )
 
     return new Game(chess, renderer, network)
 }
@@ -95,22 +97,45 @@ async function initControls() {
 }
 
 function initListeners() {
-    network.listen('LobbyEvent', 'chatMessage', (event) => {
+    network.listen('LobbyEvent', 'chatMessage', (event)=>{
         document.querySelector('#chat_messages').innerHTML += 
         `<b>${event.message.name}</b>: ${event.message.text}<br>`;
     })
 }
 
-function initVue() {
-    let vueApp = Vue.createApp({})
+async function initVue() {
+    let vueApp = Vue.createApp({
+        data() {
+            return {lobbies: []}
+        },
+        methods: {
+            join(lobbyId) {
+                network.joinLobby(lobbyId)
+            }
+        },
+        async created() {
+            this.lobbies = await network.getLobbies()
 
-    vueApp.component('test', testComponent)
+            network.listen('LobbyEvent', 'created', (event) => this.lobbies.push(event.lobby))
+            network.listen('LobbyEvent', 'updated', (event) => {
+                this.lobbies = this.lobbies.map(lobby => lobby.id === event.lobby.id ? event.lobby : lobby)
+            })
+            network.listen('LobbyEvent', 'started', (event) => {
+                this.lobbies = this.lobbies.filter((lobby) => lobby.id !== event.lobby.id)
+            })
+        },
+    })
+
+    vueApp.component('lobbylist', lobbyListComponent)
+    vueApp.component('login', loginComponent)
 
     vueApp.mount('#app');
+
 }
 
 async function init() {
-    initVue();
+    initNetwork()
+    await initVue()
     await initGame()
     initControls()
     initListeners()

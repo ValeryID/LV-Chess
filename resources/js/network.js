@@ -10,7 +10,7 @@ export default class Network {
     }
 
     init() {
-        this.echo.channel(`lobbies`).listen('LobbyEvent', (e)=>console.log(e))
+        this.echo.channel(`lobbies`).listen('LobbyEvent', (e)=>this.onLobbyEvent(e))
     }
     
     //this.network.listen('GameEvent', 'move', (event)=>this.makeMove(event.message))
@@ -29,6 +29,7 @@ export default class Network {
     }
 
     onGameEvent(e) {
+        console.log(e)
         this.dispatch(e)
 
         switch(e.type) {
@@ -37,6 +38,7 @@ export default class Network {
     }
     
     onLobbyEvent(e) {
+        console.log(e)
         this.dispatch(e)
 
         switch(e.type) {
@@ -74,7 +76,7 @@ export default class Network {
 
     joinLobby(lobbyId) {
         let promise = axios.post(`/lobby/${lobbyId}/join`)
-        promise.then((response)=>{
+        promise.then((response) => {
             this.listenLobbyChannel(response.data.id)
         })
         
@@ -105,5 +107,9 @@ export default class Network {
 
     sendChatMessage(message) {
         return axios.post(`/lobby/${this.lobbyId}/chat`, { message: message })
+    }
+
+    getLobbies() {
+        return axios.get(`/lobby/list`).then(e => e.data)
     }
 }

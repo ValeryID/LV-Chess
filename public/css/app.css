@@ -93,19 +93,38 @@ textarea {
   padding: 5px 10px 10px 10px;
   position: relative;
 }
+.login-form div {
+  background-color: #c0c0c0;
+  border: 3px solid #c0c0c0;
+  z-index: 1;
+  position: absolute;
+  border-radius: 6px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  width: 230px;
+  height: 65px;
+  padding: 5px 10px 10px 10px;
+  top: -3px;
+  left: -3px;
+}
 .login-form input {
   all: initial;
   position: relative;
   z-index: 100;
   background-color: #f4ffeb;
-  border: 1px solid black;
+  outline: 1px solid black;
   width: 100%;
   padding: 4px;
+  padding-left: 8px;
   margin-top: 5px;
   box-sizing: border-box;
 }
+.login-form input:hover {
+  background-color: #eaffd7;
+}
 .login-form input:focus {
-  background-color: #eaffba;
+  background-color: #e7fdb3;
+  outline-width: 2px;
 }
 .login-form button {
   all: initial;
@@ -127,18 +146,4 @@ textarea {
 .login-form button:active {
   background-color: #4898ff;
   border: 2px solid #4898ff;
-}
-.login-form div {
-  background-color: #c0c0c0;
-  border: 3px solid #c0c0c0;
-  z-index: 1;
-  position: absolute;
-  border-radius: 6px;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  width: 230px;
-  height: 65px;
-  padding: 5px 10px 10px 10px;
-  top: -3px;
-  left: -3px;
 }

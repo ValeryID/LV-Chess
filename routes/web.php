@@ -16,7 +16,7 @@ use App\Http\Controllers\GameController;
 |
 */
 Route::get('/', function () {
-    return view('spa');
+    return response()->file(resource_path('html/spa.html'));
 });
 
 Route::post('/login', [AuthController::class, 'authenticate']);

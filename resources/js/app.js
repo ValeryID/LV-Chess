@@ -1,13 +1,15 @@
 require('./bootstrap');
-let Vue = require('vue/dist/vue.esm-bundler.js');
+let Vue = require('vue');
 
 import Echo from 'laravel-echo';
 import Renderer from './renderer';
 import Game from './game';
 import Chess from './lib/chess';
 import Network from './network';
+import testComponent from './components/test.vue';
 
 window.Pusher = require('pusher-js');
+
 
 let network;
 
@@ -93,25 +95,18 @@ async function initControls() {
 }
 
 function initListeners() {
-    network.listen('LobbyEvent', 'chatMessage', (event)=>{
+    network.listen('LobbyEvent', 'chatMessage', (event) => {
         document.querySelector('#chat_messages').innerHTML += 
         `<b>${event.message.name}</b>: ${event.message.text}<br>`;
     })
 }
 
 function initVue() {
-    Vue.createApp({
-        data() {
-          return {
-            message: 'Hello Vue 3!'
-          }
-        },
-        methods: {
-          setMessage(event) {
-            this.message = event.target.value;
-          }
-        }
-      }).mount('#app');
+    let vueApp = Vue.createApp({})
+
+    vueApp.component('test', testComponent)
+
+    vueApp.mount('#app');
 }
 
 async function init() {

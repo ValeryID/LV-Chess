@@ -15,41 +15,12 @@
 
         <div id="app">
             <div class='horizontal-layout'>
-                <canvas width=600 height=600 id="game_board"></canvas>
-                <div class='vertical-layout'>
-                    <form name='loginForm'>
-                        <label>email</label><input name='email' type='text' value='test@mail.com'>
-                        <label>password</label><input name='password' type='password' value='testpassword'>
-                        <button name="submit_button" type="button">login</button>
-                        <input name='responseLabel' type='text' disabled='true'>
-                    </form>
-                    <form name='lobbyForm'>
-                        <label>lobby</label><input name='lobby' type='text'>
-                        <label>hostColor</label><input name='hostColor' type='text' value='w'>
-                        <label>public</label><input name='public' type='text' value='true'>
-                        <label>timeLimit</label><input name='timeLimit' type='number' min='0' value='900'>
-                        <br>
-                        <button name="join_button" type="button">join</button>
-                        <button name="make_button" type="button">make</button>
-                        <button name="start_button" type="button">start</button>
-                        <input name='responseLabel' type='text' disabled='true'>
-                    </form>
-                    <form name='gameForm'>
-                        <label>Game</label><input type='text' name='game' disabled='true'>
-                        <input name='responseLabel' type='text' disabled='true'>
-                    </form>
-                </div>
-                <div class='chat'>
-                    <div id='chat_messages' class='chat-messages'></div>
-                    <form name='chatForm'>
-                        <input name='message' type='text'>
-                        <input style="display:none" name='fj' type='text'>
-                        <button name="send_button" type="button">Send</button>
-                    </form>
-                </div>
+                <board @move='boardMove' :spritesheet='spritesheet' ref='board' width=600 height=600></board>
+                <login @login='login' :loggedin='loggedin'></login>
+                <lobby @create='createLobby' @start='startLobby' :lobbyid='lobbyid'></lobby>
                 <lobbylist @lobbyselected='join' :lobbies='lobbies'></lobbylist>
+                <chat @message='sendChatMessage' :messages='messages'></chat>
             </div>
-            <login></login>
         </div>
         
     </body>

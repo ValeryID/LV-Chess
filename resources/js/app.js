@@ -8,13 +8,14 @@ import Chess from './lib/chess';
 import Network from './network';
 import lobbyListComponent from './components/LobbyList.vue';
 import loginComponent from './components/Login.vue';
+import lobbyComponent from './components/Lobby.vue';
+import chatComponent from './components/Chat.vue';
+import boardComponent from './components/Board.vue';
 
 window.Pusher = require('pusher-js');
 
-let network;
-
 function initNetwork() {
-    network = new Network(
+    return new Network(
         new Echo({
             broadcaster: 'pusher',
             key: 'wbe54yw45yw3',
@@ -41,104 +42,96 @@ async function initGame() {
     return new Game(chess, renderer, network)
 }
 
-async function initControls() {
-    loginForm.submit_button.onclick = async (e) => {
-        try {
-            let response = await network.login(loginForm.email.value, loginForm.password.value)
-            loginForm.responseLabel.value = response.statusText
-        } catch(e) {
-            loginForm.responseLabel.value = e
-        }
-    }
-
-    lobbyForm.join_button.onclick = async (e) => {
-        try {
-            let response = await network.joinLobby(lobbyForm.lobby.value)
-            lobbyForm.responseLabel.value = response.statusText
-        } catch(e) {
-            lobbyForm.responseLabel.value = e
-        }
-    }
-
-    lobbyForm.make_button.onclick = async (e) => {
-            let response = await network.makeLobby(
-                lobbyForm.hostColor.value, 
-                lobbyForm.public.value,
-                lobbyForm.timeLimit.value)
-        try {
-            let lobby = response.data
-            lobbyForm.responseLabel.value = response.statusText
-            lobbyForm.lobby.value = lobby.id
-        } catch(e) {
-            lobbyForm.responseLabel.value = e
-        }
-    }
-
-    lobbyForm.start_button.onclick = async (e) => {
-        try {
-            let response = await network.startLobby(lobbyForm.lobby.value)
-            lobbyForm.responseLabel.value = response.statusText
-        } catch(e) {
-            lobbyForm.responseLabel.value = e
-        }
-    }
-
-    chatForm.send_button.addEventListener('click', async (e) => {
-        network.sendChatMessage(chatForm.message.value)
-    })
-
-    chatForm.message.addEventListener('keyup', (e) => {
-        if(e.keyCode === 13) {
-            e.preventDefault()
-            network.sendChatMessage(chatForm.message.value)
-            return false
-        }
-    })
-}
-
-function initListeners() {
-    network.listen('LobbyEvent', 'chatMessage', (event)=>{
-        document.querySelector('#chat_messages').innerHTML += 
-        `<b>${event.message.name}</b>: ${event.message.text}<br>`;
-    })
-}
-
-async function initVue() {
+async function initVue(network) {
     let vueApp = Vue.createApp({
         data() {
-            return {lobbies: []}
+            return {
+                lobbies: [],
+                lobbyid: null,
+                messages: [],
+                loggedin: true,
+                spritesheet: new Image()
+            }
+        },
+        computed: {
         },
         methods: {
             join(lobbyId) {
                 network.joinLobby(lobbyId)
+            },
+            login(credentials) {
+                network.login(credentials.email, credentials.password)
+                .then(d => this.loggedin = true, e => network.getUser())
+            },
+            createLobby(config) {
+                network.makeLobby(
+                    config.hostColor, 
+                    config.public,
+                    config.timeLimit)
+            },
+            startLobby(config) {
+                network.startLobby(this.lobbyid)
+            },
+            sendChatMessage(text) {
+                network.sendChatMessage(text)
+            },
+            initNetwork() {
+                network.getLobbies().then(lobbies => this.lobbies = lobbies)
+            
+                network.listen(null, 'newLobbyId', (event) => this.lobbyid = event.message)
+                network.listen(null, 'logout', (event) => this.loggedin = false)
+                network.listen('LobbyEvent', 'created', (event) => this.lobbies.push(event.lobby))
+                network.listen('LobbyEvent', 'chatMessage', (event) => this.messages.push(event.message))
+                network.listen('LobbyEvent', 'updated', (event) => {
+                    this.lobbies = this.lobbies.map(lobby => lobby.id === event.lobby.id ? event.lobby : lobby)
+                })
+                network.listen('LobbyEvent', 'started', (event) => {
+                    this.lobbies = this.lobbies.filter((lobby) => lobby.id !== event.lobby.id)
+                })
+
+                network.getUser()
+            },
+            async initBoard() {
+                let board = this.$refs.board
+
+                network.listen('GameEvent', 'move', (event)=>board.makeMove(event.message))
+                network.listen('LobbyEvent', 'started', ()=>board.reset())
+                network.listen(null, 'userColor', (event)=>board.setColor(event.message))
+
+                this.spritesheet = await new Promise((resolve, reject) => {
+                    this.spritesheet.onload = () => resolve(this.spritesheet)
+                    this.spritesheet.onerror = () => reject()
+                    this.spritesheet.src = '/images/spritesheet.png'
+                })
+                
+                board.init()
+            },
+            boardMove(move) {
+                network.sendMove(move)
             }
         },
         async created() {
-            this.lobbies = await network.getLobbies()
-
-            network.listen('LobbyEvent', 'created', (event) => this.lobbies.push(event.lobby))
-            network.listen('LobbyEvent', 'updated', (event) => {
-                this.lobbies = this.lobbies.map(lobby => lobby.id === event.lobby.id ? event.lobby : lobby)
-            })
-            network.listen('LobbyEvent', 'started', (event) => {
-                this.lobbies = this.lobbies.filter((lobby) => lobby.id !== event.lobby.id)
-            })
+            this.initNetwork()
         },
+        mounted() {
+            this.initBoard()
+        }
     })
 
     vueApp.component('lobbylist', lobbyListComponent)
     vueApp.component('login', loginComponent)
+    vueApp.component('lobby', lobbyComponent)
+    vueApp.component('chat', chatComponent)
+    vueApp.component('board', boardComponent)
 
     vueApp.mount('#app');
 
 }
 
 async function init() {
-    initNetwork()
-    await initVue()
-    await initGame()
-    initControls()
-    initListeners()
+    let network = initNetwork()
+    //await initGame()
+    await initVue(network)
 }
 
 document.addEventListener("DOMContentLoaded", init);

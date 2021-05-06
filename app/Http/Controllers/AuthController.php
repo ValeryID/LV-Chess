@@ -22,7 +22,7 @@ class AuthController extends Controller//$request->user()
             return response(['status' => 'success']);
         }
 
-        return response(['status'=>'fail'], 401);
+        return response(['status'=>'fail'], 403);
     }
     
     public function test(Request $request)

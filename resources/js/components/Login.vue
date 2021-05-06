@@ -1,30 +1,29 @@
 <template>
     <div class='login-form'>
         <div></div>
-        <input placeholder='email' type='text'/>
-        <input placeholder='password' type='password'/>
-        <button>Login</button>
+        <input placeholder='email' v-model='email' type='email'/>
+        <input placeholder='password' v-model='password' type='password'/>
+        <span :class="[{'dot-active': loggedin}, 'dot']"></span>
+        <button @click='login'>Login</button>
     </div>
 </template>
 
 <script>
 export default {
-    props: ['lobbies'],
-    emits: ['lobbyselected'],
+    props: ['loggedin'],
+    emits: ['login'],
     data() {
         return {
-            message: 'Hello Vue 356745!'
+            email: 'test@mail.com',
+            password: 'testpassword'
         }
     },
     methods: {
-        lobbySelected(lobby) {
-            this.$emit('lobbyselected', lobby.id)
-        },
-        setMessage(event) {
-            this.message = event.target.value;
-        },
-        log(message) {
-            console.log(message)
+        login() {
+            this.$emit('login', {
+                email: this.email,
+                password: this.password
+            })
         }
     }
 }

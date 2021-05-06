@@ -11,8 +11,85 @@
   font: 20px sans-serif;
 }
 
+@mixin light-div($height, $width:230px) {
+	$col: $form-background-light;
+	background-color: $col;
+	border: 3px solid $col;
+	z-index: 1;
+	position: absolute;
+	border-radius: 6px;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+	width: $width;
+	height: $height;
+	padding: 5px 10px 10px 10px;
+	top: -3px;
+	left: -3px;
+}
+
+@mixin form-div($height, $width:230px) {
+	@include clean-font();
+	flex-shrink: 0;
+	$col: $form-background-dark;
+	background-color: $col;
+	border: 3px solid $col;
+	border-radius: 6px;
+	display: block;
+	width: $width;
+	height: $height;
+	padding: 3px 10px 10px 10px;
+	position: relative;
+	overflow: clip;
+}
+
+@mixin standart-input() {
+	@include clean-font();
+	position: relative;
+	z-index: 100;
+	background-color: #f4ffeb;
+	outline: 1px solid black;
+	width: 100%;
+	padding: 4px;
+	padding-left: 8px;
+	margin-top: 5px;
+	box-sizing: border-box;
+	&:hover {
+		background-color: #eaffd7;
+	}
+	&:focus {
+		background-color: #e7fdb3;
+		outline-width: 2px;
+	}
+}
+
 body {
   @include font();
+}
+
+button {
+	@include clean-font();
+	width: 80px;
+	text-align: center;
+	cursor: pointer;
+	border-radius: 6px;
+	padding: 5px;
+	margin-top: 18px;
+	margin-left: 15px;
+	float: right;
+
+	$col: #92bbf1;
+	background-color: $col;
+	border: 2px solid $col;
+	&:hover {
+  		$col: #7baef1;
+		background-color: $col;
+		border: 2px solid $col;
+	}
+	&:active {
+  		$col: #4898ff;
+		background-color: $col;
+		border: 2px solid $col;
+	}
 }
 
 form {
@@ -46,29 +123,30 @@ textarea {
 }
 
 .chat {
-	position: relative;
-	margin: 10px;
-	background-color: #b6b6b6;
-	width: 500px;
-	form {
-		position: absolute;
-		background-color: cadetblue;
-		margin: 0px;
-		bottom: 0px;
+	@include form-div(600px, 500px);
+	padding-bottom: 0;
+	.controls-div {
+		display: flex;
+		flex-direction: row;
 		width: 100%;
-		padding-left: 0px;
-		padding-right: 0px;
+		justify-content: flex-start;
+		align-items: center;
+		height: 40px;
+		margin-top: 5px;
 		input {
-			display: inline;
-			margin-left: 5px;
-			width: 85%;
+			@include standart-input();
+			margin-top: 0;
+		}
+		button {
+			margin-top: 0;
 		}
 	}
 }
 
 .chat-messages {
+	font: 20px Comic Sans MS, Comic Sans, cursive;
 	box-sizing: border-box;
-	font: 16px "Fira Sans", sans-serif;
+	background-color: $form-background-light;
 	overflow-y: auto;
 	overflow-wrap: break-word;
 	padding: 10px;
@@ -77,14 +155,12 @@ textarea {
 }
 
 .lobby-list {
-	overflow-y: auto;
-	padding: 10px;
-	width: 300px;
-	height: 600px;
-	background-color: #b6b6b6;
+	@include form-div(600px, 300px);
+	overflow-y: scroll;
 }
 
 .lobby-list-item {
+	cursor: pointer;
 	width: 100%;
 	padding: 5px;
 	border: 2px solid black;
@@ -101,71 +177,45 @@ textarea {
 }
 
 .login-form {
-  $col: #a0a0a0;
-  background-color: $col;
-	border: 3px solid $col;
-	border-radius: 6px;
-	display: block;
-	width: 230px;
-	height: 121px;
-	padding: 3px 10px 10px 10px;
-  position: relative;
-  div {
-    $col: #c0c0c0;
-    background-color: $col;
-    border: 3px solid $col;
-    z-index: 1;
-    position: absolute;
-    border-radius: 6px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    width: 230px;
-    height: 68px;
-    padding: 5px 10px 10px 10px;
-    top: -3px;
-    left: -3px;
+	@include form-div(121px);
+
+	div {
+		@include light-div(68px);
 	}
+	
 	input {
-    @include clean-font();
-    position: relative;
-    z-index: 100;
-		background-color: #f4ffeb;
-		outline: 1px solid black;
-		width: 100%;
-		padding: 4px;
-    padding-left: 8px;
-		margin-top: 5px;
-		box-sizing: border-box;
-    &:hover {
-			background-color: #eaffd7;
-		}
-		&:focus {
-			background-color: #e7fdb3;
-      outline-width: 2px;
-		}
+		@include standart-input();
 	}
-	button {
-		@include clean-font();
-		width: 80px;
-		text-align: center;
-		cursor: pointer;
-		border-radius: 6px;
-		padding: 5px;
-		margin-top: 18px;
-		float: right;
-    
-    $col: #92bbf1;
-		background-color: $col;
-		border: 2px solid $col;
-		&:hover {
-      $col: #7baef1;
-			background-color: $col;
-			border: 2px solid $col;
-		}
-		&:active {
-      $col: #4898ff;
-			background-color: $col;
-			border: 2px solid $col;
-		}
+}
+
+.dot {
+	float: left;
+	height: 25px;
+	width: 25px;
+	margin-top: 26px;
+	background-color: #bbb;
+	border-radius: 50%;
+	box-shadow: 0 0 0 2pt rgb(0, 0, 0);
+	display: block;
+}
+
+.dot-active {
+	background-color: rgb(139, 223, 61);
+}
+
+.lobby-form {
+	@include form-div(180px);
+	
+	div {
+		@include light-div(125px);
+	}
+
+	label {
+		position: relative;
+		z-index: 100;
+	}
+
+	select, input {
+		@include standart-input();
 	}
 }

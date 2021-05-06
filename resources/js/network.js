@@ -4,9 +4,40 @@ export default class Network {
 
         this.listeners = []
         this.gameId = null
-        this.lobbyId = null
 
         this.init()
+    }
+
+    set lobbyId(a) {
+        this._lobbyId = a
+        this.dispatch({
+            class: null,
+            type: 'newLobbyId',
+            message: this._lobbyId
+        })
+    }
+
+    get lobbyId() {
+        return this._lobbyId === undefined ? null : this._lobbyId
+    }
+
+    sendAxiosRequest(request) {
+        return request().then(d=>d, e=>{
+            if([401, 419].includes(e.response.status)) this.dispatch({
+                class: null,
+                type: 'logout'
+            })
+
+            return new Promise((res, rej) => rej(e.response.status))
+        })
+    }
+
+    post(path, properties={}, config={}) {
+        return this.sendAxiosRequest(()=>axios.post(path, properties, config))
+    }
+
+    get(path, properties={}, config={}) {
+        return this.sendAxiosRequest(()=>axios.get(path, properties, config))
     }
 
     init() {
@@ -60,7 +91,7 @@ export default class Network {
     }
 
     getColor() {
-        let promise = axios.get(`/game/${this.gameId}/getcolor`)
+        let promise = this.get(`/game/${this.gameId}/getcolor`)
         promise.then((response)=>this.dispatch({
             class: null,
             type: 'userColor',
@@ -71,11 +102,11 @@ export default class Network {
     }
 
     login(email, password) {
-        return axios.post('/login', {email: email, password: password})
+        return this.post('/login', {email: email, password: password})
     }
 
     joinLobby(lobbyId) {
-        let promise = axios.post(`/lobby/${lobbyId}/join`)
+        let promise = this.post(`/lobby/${lobbyId}/join`)
         promise.then((response) => {
             this.listenLobbyChannel(response.data.id)
         })
@@ -84,7 +115,7 @@ export default class Network {
     }
 
     makeLobby(hostColor, isPublic, timeLimit) {
-        let promise = axios.post('/lobby/make', {
+        let promise = this.post('/lobby/make', {
             hostColor: hostColor, 
             public: isPublic, 
             timeLimit: timeLimit
@@ -98,18 +129,22 @@ export default class Network {
     }
 
     startLobby(lobbyId) {
-        return axios.post(`/lobby/${lobbyId}/start`)
+        return this.post(`/lobby/${lobbyId}/start`)
     }
 
     sendMove(algebraic) {
-        return axios.post(`/game/${this.gameId}/move`, { algebraic: algebraic })
+        return this.post(`/game/${this.gameId}/move`, { algebraic: algebraic })
     }
 
     sendChatMessage(message) {
-        return axios.post(`/lobby/${this.lobbyId}/chat`, { message: message })
+        return this.post(`/lobby/${this.lobbyId}/chat`, { message: message })
     }
 
     getLobbies() {
-        return axios.get(`/lobby/list`).then(e => e.data)
+        return this.get(`/lobby/list`).then(e => e.data)
+    }
+
+    getUser() {
+        return this.get(`/user`).then(e => e.data)
     }
 }

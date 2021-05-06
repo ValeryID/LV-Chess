@@ -164,18 +164,22 @@ textarea {
 
 .lobby-list-item {
 	@include clean-font();
+	$border: 2px solid black;
+
 	cursor: pointer;
 	width: 100%;
 	padding: 5px;
-	border: 2px solid black;
+	border: $border;
 	border-radius: 4px;
 	margin-bottom: 6px;
 	box-sizing: border-box;
 	background-color: burlywood;
 	&:hover {
+		border: $border;
 		background-color: #dfab66;
 	}
 	&:active {
+		border: $border;
 		background-color: #da7b44;
 	}
 }

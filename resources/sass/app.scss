@@ -90,6 +90,9 @@ button {
 		background-color: $col;
 		border: 2px solid $col;
 	}
+	&:focus {
+	  	outline: 3px solid rgb(0, 0, 0);
+  }
 }
 
 form {
@@ -160,6 +163,7 @@ textarea {
 }
 
 .lobby-list-item {
+	@include clean-font();
 	cursor: pointer;
 	width: 100%;
 	padding: 5px;

@@ -1,6 +1,6 @@
 <template>
     <div class='login-form'>
-        <div></div>
+        <div class='light-div'></div>
         <input placeholder='email' v-model='email' type='email'/>
         <input placeholder='password' v-model='password' type='password'/>
         <span :class="[{'dot-active': user}, 'dot']"></span>

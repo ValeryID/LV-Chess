@@ -67,7 +67,7 @@ class Game extends Model implements CardableInterface
         }
 
         if($this->isPlayersTurn($user)) {
-            $elapsedTime += Carbon::now()->diffInSeconds($moves->last()->created_at);
+            $elapsedTime += Carbon::now()->diffInSeconds(($moves->last() ?: $this)->created_at);
         }
 
         return $elapsedTime;
@@ -75,7 +75,7 @@ class Game extends Model implements CardableInterface
 
     public function isPlayerTimeOver(User $user): bool
     {
-        return $this->countPlayerElapsedTime($user) > $this->lobby->time_limit;
+        return $this->countPlayerElapsedTime($user) > $this->lobby()->time_limit;
     }
 
     public function timeCheck(User $user): bool

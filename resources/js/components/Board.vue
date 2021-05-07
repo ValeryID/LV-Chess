@@ -1,12 +1,15 @@
 <template>
     <div class='board'>
         <canvas @click='onClick' id='board-canvas' :width='width' :height='width'></canvas>
+        <div style='color: white'>{{Math.max(whitePlayerTime, 0)}}</div>
+        <div style='color: white'>{{Math.max(blackPlayerTime, 0)}}</div>
     </div>
 </template>
 
 <script>
 import Network from '../modules/network';
 import Renderer from '../modules/renderer';
+import Store from '../modules/storage';
 import Chess from '../lib/chess';
 
 export default {
@@ -16,24 +19,45 @@ export default {
         return {
             width: '600',
             height: '600',
-            spriteSheet: new Image()
+            spriteSheet: new Image(),
+            whitePlayerTime: 900,
+            blackPlayerTime: 900,
+            started: false
         }
     },
     methods: {
         init() {
-            this.reset()
+            setInterval(() => {
+                if(!this.started) return
+                
+                if(this.engine.turn() === 'w') {
+                    if(this.whitePlayerTime-- <= 0 && this.color === 'b') Network.sendTimeOver('w')
+                } else {
+                    if(this.blackPlayerTime-- <= 0 && this.color === 'w') Network.sendTimeOver('b')
+                }
+            }, 1000)
         },
 
         render() {
             Renderer.render()
         },
 
-        reset() {
+        restart() {
+            this.started = true
+
             this.ceilSelected = null
             this.color = null
             this.engine.reset()
             Renderer.setBoard(this.engine.board())
             Renderer.setMove(null)
+
+            let lobby = Store.findLobbyById(Network.lobbyId)
+
+            console.log('!!!', Network.lobbyId)
+            if(lobby) {
+                console.log('ggg', this.whitePlayerTime = this.blackPlayerTime = lobby.time_limit)
+            }
+            
         },
 
         setColor(color) {
@@ -114,7 +138,7 @@ export default {
         this.engine = new Chess()
 
         Network.listen('GameEvent', 'move', (event) => this.makeMove(event.message))
-        Network.listen('GameEvent', 'created', () => this.reset())
+        Network.listen('GameEvent', 'created', () => this.restart())
         Network.listen(null, 'userColor', (event) => this.setColor(event.message))
 
         this.spriteSheet = await new Promise((resolve, reject) => {

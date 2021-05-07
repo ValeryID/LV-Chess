@@ -16,9 +16,9 @@
         </select>
         <label><b>Time limit: </b></label>
         <input placeholder='Time limit' v-model='timeLimit' type='number' :disabled='!configEnabled()'/>
-        <button @click='create' :disabled='isHost()'>Create</button>
-        <button @click='start' :disabled='!lobby || !isHost() || !lobby.guest'>Start</button>
-        <button @click='leave' :disabled='!lobby'>Leave</button>
+        <button @click='create' :disabled='isHost() && isLobbyOpen()'>Create</button>
+        <button @click='start' :disabled='!isLobbyOpen() || !isHost() || !lobby.guest'>Start</button>
+        <button @click='leave' :disabled='!isLobbyOpen()'>Leave</button>
     </div>
 </template>
 
@@ -67,7 +67,10 @@ export default {
             return this.lobby && this.lobby.host.id === Network.user.id
         },
         configEnabled() {
-            return !this.lobby
+            return !this.isLobbyOpen()
+        },
+        isLobbyOpen() {
+            return this.lobby && this.lobby.status === 'open'
         }
     },
     created() {

@@ -1,11 +1,14 @@
 <template>
-    <div class='lobby-list'>
-        <button v-if='lobbies.length > 0' v-for='lobby in lobbies' @click='join(lobby.id)' 
-        class='lobby-list-item'>
-            {{`${lobby.id}. ${1 + (lobby.guest !== null)}/2`}}<br>
-            {{`Host color:"${lobby.host_color}"`}}<br>
-            {{`Time limit:${lobby.time_limit}`}}
-        </button>
+    <div class='lobby-list' @click='test'>
+        <div v-if='lobbies.length > 0'>
+            <template v-for='lobby in lobbies'>
+                <button v-if="lobby.status === 'open'" @click='join(lobby.id)' class='lobby-list-item'>
+                    {{`${lobby.id}. ${1 + (lobby.guest !== null)}/2`}}<br>
+                    {{`Host color:"${lobby.host_color}"`}}<br>
+                    {{`Time limit:${lobby.time_limit}`}}
+                </button>
+            </template>
+        </div>
         <b v-else>No lobbies found</b>
     </div>
 </template>
@@ -24,7 +27,8 @@ export default {
     computed: {
         lobbies() {
             for(let lobby of Store.state.lobbies) {
-                if(!Network.lobbyId && 
+                if(lobby.status === 'open' &&
+                !Network.lobbyId && 
                 Network.user && 
                 Network.user.id === lobby.host.id) 
                     this.join(lobby.id);
@@ -36,6 +40,9 @@ export default {
     methods: {
         join(lobbyId) {
             Network.joinLobby(lobbyId)
+        },
+        test() {
+            console.log(this.lobbies)
         }
     },
     created() {
@@ -45,8 +52,8 @@ export default {
         Network.listen('LobbyEvent', 'updated', (event) => {
             Store.state.lobbies = Store.state.lobbies.map(
                 lobby => lobby.id === event.lobby.id ? event.lobby : lobby)
-            if(['started', 'closed'].includes(event.lobby.status))
-                Store.state.lobbies = Store.state.lobbies.filter((lobby) => lobby.id !== event.lobby.id)
+            // if(['started', 'closed'].includes(event.lobby.status))
+            //     Store.state.lobbies = Store.state.lobbies.filter((lobby) => lobby.id !== event.lobby.id)
         })
         // Network.listen('LobbyEvent', 'started', (event) => {
         //     Store.state.lobbies = Store.state.lobbies.filter((lobby) => lobby.id !== event.lobby.id)

@@ -38,7 +38,7 @@ export default {
     },
 
     get lobbyId() {
-        return this._lobbyId === undefined ? null : this._lobbyId
+        return this._lobbyId
     },
 
     syncUser() {
@@ -162,6 +162,11 @@ export default {
 
     sendMove(algebraic) {
         return this.post(`/game/${this.gameId}/move`, { algebraic: algebraic })
+    },
+
+    sendTimeOver(color) {
+        return this.get(`/game/${this.gameId}/timeover/${color}`)
+            .then(data=>console.log(data))
     },
 
     sendChatMessage(message) {

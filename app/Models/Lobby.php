@@ -26,6 +26,7 @@ class Lobby extends Model implements CardableInterface
 
         $lobby = new self();
         $lobby->host_id = $user->id;
+        $lobby->status = 'open';
         $lobby->public = $params['public'] ?? config('game.lobby.default.public');
         $lobby->host_color = $params['hostColor'] ?? config('game.lobby.default.host_color');
         $lobby->time_limit = $params['timeLimit'] ?? config('game.lobby.default.time_limit');

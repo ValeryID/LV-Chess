@@ -1,5 +1,7 @@
 <template>
-    <canvas @click='onClick' id='board-canvas' :width='width' :height='width'></canvas>
+    <div class='board'>
+        <canvas @click='onClick' id='board-canvas' :width='width' :height='width'></canvas>
+    </div>
 </template>
 
 <script>

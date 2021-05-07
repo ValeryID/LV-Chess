@@ -14,7 +14,7 @@
     <body>
 
         <div id="app">
-            <div class='horizontal-layout'>
+            <div class='layout'>
                 <board @move='boardMove' :spritesheet='spritesheet' ref='board' width=600 height=600></board>
                 <login @login='login' :loggedin='loggedin'></login>
                 <lobby @create='createLobby' @start='startLobby' :lobbyid='lobbyid'></lobby>

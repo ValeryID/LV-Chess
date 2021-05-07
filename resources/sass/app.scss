@@ -33,6 +33,7 @@
 	$col: $form-background-dark;
 	background-color: $col;
 	border: 3px solid $col;
+	box-shadow: 0px 0px 4px 0px rgb(68, 68, 68);
 	border-radius: 6px;
 	display: block;
 	width: $width;
@@ -48,11 +49,13 @@
 	z-index: 100;
 	background-color: #f4ffeb;
 	outline: 1px solid black;
+	box-shadow: 0px 0px 4px 0px rgb(68, 68, 68);
 	width: 100%;
 	padding: 4px;
 	padding-left: 8px;
 	margin-top: 5px;
 	box-sizing: border-box;
+	transition: all .16s;
 	&:hover {
 		background-color: #eaffd7;
 	}
@@ -68,6 +71,12 @@ body {
 
 button {
 	@include clean-font();
+
+	$border: 2px solid black;
+	$color-defaul: burlywood;
+	$color-hover: #daa35b;
+	$color-active: #da7b44;
+
 	width: 80px;
 	text-align: center;
 	cursor: pointer;
@@ -77,22 +86,23 @@ button {
 	margin-left: 15px;
 	float: right;
 
-	$col: #92bbf1;
+	$col: $color-defaul;
 	background-color: $col;
-	border: 2px solid $col;
+	border: $border;
+	transition: all .16s;
+
 	&:hover {
-  		$col: #7baef1;
+  		$col: $color-hover;
 		background-color: $col;
-		border: 2px solid $col;
-	}
-	&:active {
-  		$col: #4898ff;
-		background-color: $col;
-		border: 2px solid $col;
 	}
 	&:focus {
-	  	outline: 1px solid rgb(0, 0, 0);
-  }
+		box-shadow: 0px 0px 6px 0px rgb(255, 255, 255);
+	}
+	&:active {
+		$col: $color-active;
+		background-color: $col;
+		box-shadow: 0px 0px 6px 0px rgb(0, 0, 0) inset;
+	}
 }
 
 form {
@@ -115,14 +125,12 @@ textarea {
 	resize: none;
 }
 
-.horizontal-layout {
+.layout {
 	display: flex;
-	flex-direction: row;
-}
-
-.vertical-layout {
-	display: flex;
+	align-content: flex-start;
+	flex-wrap: wrap;
 	flex-direction: column;
+	height: 700px;
 }
 
 .chat {
@@ -163,25 +171,12 @@ textarea {
 }
 
 .lobby-list-item {
-	@include clean-font();
-	$border: 2px solid black;
-
-	cursor: pointer;
+	@include font();
+	text-align: left;
 	width: 100%;
 	padding: 5px;
-	border: $border;
-	border-radius: 4px;
 	margin-bottom: 6px;
 	box-sizing: border-box;
-	background-color: burlywood;
-	&:hover {
-		border: $border;
-		background-color: #dfab66;
-	}
-	&:active {
-		border: $border;
-		background-color: #da7b44;
-	}
 }
 
 .login-form {

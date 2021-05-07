@@ -2,8 +2,10 @@ require('./bootstrap')
 let Vue = require('vue')
 
 import Echo from 'laravel-echo'
+
 import Network from './modules/network'
-import VueApp from './app.vue'
+import VueApp from './vueApp.js'
+import Store from './modules/storage'
 
 import lobbyListComponent from './components/LobbyList.vue'
 import loginComponent from './components/Login.vue'
@@ -25,7 +27,7 @@ function initNetwork() {
 }
 
 function initVue() {
-    let app = Vue.createApp(VueApp)
+    const app = Vue.createApp(VueApp)
     
     app.component('lobbylist', lobbyListComponent)
     app.component('login', loginComponent)
@@ -33,7 +35,8 @@ function initVue() {
     app.component('chat', chatComponent)
     app.component('board', boardComponent)
 
-    app.mount('#app');
+    app.use(Store)
+    app.mount('#app')
 }
 
 function init() {

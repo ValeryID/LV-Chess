@@ -27,7 +27,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Gate::define('lobby-start-game', function (User $user, Lobby $lobby) {
+        Gate::define('lobby-modify', function (User $user, Lobby $lobby) {
             return $lobby->host()->is($user);
         });
 

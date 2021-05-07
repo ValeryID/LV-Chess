@@ -1,9 +1,10 @@
-<script>
-import Network from './modules/network';
+import Network from './modules/network'
+import Storage from './modules/storage'
 
 export default {
     data() {
         return {
+
         }
     },
     computed: {
@@ -15,5 +16,3 @@ export default {
     mounted() {
     }
 }
-
-</script>

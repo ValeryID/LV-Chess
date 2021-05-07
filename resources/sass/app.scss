@@ -11,7 +11,7 @@
   font: 20px sans-serif;
 }
 
-@mixin light-div($height, $width:230px) {
+@mixin light-div($height, $width) {
 	$col: $form-background-light;
 	background-color: $col;
 	border: 3px solid $col;
@@ -27,7 +27,7 @@
 	left: -3px;
 }
 
-@mixin form-div($height, $width:230px) {
+@mixin form-div($height, $width) {
 	@include clean-font();
 	flex-shrink: 0;
 	$col: $form-background-dark;
@@ -41,6 +41,14 @@
 	padding: 3px 10px 10px 10px;
 	position: relative;
 	overflow: clip;
+}
+
+@mixin light-dark-div($height, $width:230px, $dark-div-height:55px) {
+	@include form-div($height, $width);
+	
+	.light-div {
+		@include light-div($height - $dark-div-height, $width);
+	}
 }
 
 @mixin standart-input() {
@@ -62,6 +70,10 @@
 	&:focus {
 		background-color: #e7fdb3;
 		outline-width: 2px;
+	}
+	&:disabled {
+		box-shadow: 0px 0px 6px 0px rgb(0, 0, 0) inset;
+		background-color: #bbabab;
 	}
 }
 
@@ -105,6 +117,11 @@ button {
 		$col: $color-active;
 		background-color: $col;
 		box-shadow: 0px 0px 6px 0px rgb(0, 0, 0) inset;
+	}
+	&:disabled {
+		cursor: default;
+		box-shadow: 0px 0px 6px 0px rgb(0, 0, 0) inset;
+		background-color: #bbabab;
 	}
 }
 
@@ -175,15 +192,11 @@ textarea {
 }
 
 .login-form {
-	@include form-div(121px);
+	@include light-dark-div(121px);
 
 	button {
 		margin-top: 18px;
 		margin-left: 15px;
-	}
-
-	div {
-		@include light-div(68px);
 	}
 	
 	input {
@@ -207,24 +220,24 @@ textarea {
 }
 
 .lobby-form {
-	@include form-div(180px);
-	
-	div {
-		@include light-div(125px);
-	}
+	@include light-dark-div(312px, 297px);
 
 	button {
 		margin-top: 18px;
-		margin-left: 15px;
+		margin-left: 0px;
+		margin-right: 5px;
 	}
 
 	label {
+		display: block;
 		position: relative;
+		margin-top: 5px;
 		z-index: 100;
 	}
 
 	select, input {
 		@include standart-input();
+		margin-top: 0px;
 	}
 }
 

@@ -114,7 +114,7 @@ export default {
         this.engine = new Chess()
 
         Network.listen('GameEvent', 'move', (event) => this.makeMove(event.message))
-        Network.listen('LobbyEvent', 'started', () => this.reset())
+        Network.listen('GameEvent', 'created', () => this.reset())
         Network.listen(null, 'userColor', (event) => this.setColor(event.message))
 
         this.spriteSheet = await new Promise((resolve, reject) => {

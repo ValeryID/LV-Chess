@@ -14,7 +14,7 @@ class AddStatusToLobbiesTable extends Migration
     public function up()
     {
         Schema::table('lobbies', function (Blueprint $table) {
-            $table->enum('started', ['true', 'false'])->default('false');
+            $table->enum('status', ['open', 'started', 'closed'])->default('open');
         });
     }
 
@@ -26,7 +26,7 @@ class AddStatusToLobbiesTable extends Migration
     public function down()
     {
         Schema::table('lobbies', function (Blueprint $table) {
-            $table->dropColumn('started');
+            $table->dropColumn('status');
         });
     }
 }

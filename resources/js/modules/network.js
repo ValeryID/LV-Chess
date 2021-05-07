@@ -3,6 +3,7 @@ export default {
     listeners: [],
     gameId: null,
     _user: null,
+    _lobbyId: null,
 
     init(echo) {
         this.echo = echo
@@ -75,35 +76,39 @@ export default {
                 listener.callback(event)
     },
 
-    onGameEvent(e) {
-        console.log(e)
-        this.dispatch(e)
+    onGameEvent(event) {
+        console.log(event)
+        this.dispatch(event)
 
-        switch(e.type) {
-            case 'move': break;
+        switch(event.type) {
+            case 'created': this.listenGameChannel(event.game.id); break;
         }
     },
     
-    onLobbyEvent(e) {
-        console.log(e)
-        this.dispatch(e)
+    onLobbyEvent(event) {
+        console.log(event)
+        this.dispatch(event)
 
-        switch(e.type) {
-            case 'started': this.listenGameChannel(e.message.id); break;
+        switch(event.type) {
+            //case 'started': this.listenGameChannel(event.message.id); break;
         }
     },
 
     listenLobbyChannel(id) {
         if(this.lobbyId) this.echo.leave(`lobby.${this.lobbyId}`)
         this.lobbyId = id
-        this.echo.channel(`lobby.${id}`).listen('LobbyEvent', (e)=>this.onLobbyEvent(e));
+        this.echo.channel(`lobby.${id}`)
+            .listen('LobbyEvent', (e)=>this.onLobbyEvent(e))
+            .listen('GameEvent', (e)=>this.onGameEvent(e))
     },
 
     listenGameChannel(id) {
         if(this.gameId) this.echo.leave(`game.${this.gameId}`)
         this.gameId = id
         this.getColor()
-        this.echo.channel(`game.${id}`).listen('GameEvent', (e)=>this.onGameEvent(e))
+        this.echo.channel(`game.${id}`)
+            .listen('LobbyEvent', (e)=>this.onLobbyEvent(e))
+            .listen('GameEvent', (e)=>this.onGameEvent(e))
     },
 
     getColor() {
@@ -147,6 +152,12 @@ export default {
 
     startLobby(lobbyId=this.lobbyId) {
         return this.post(`/lobby/${lobbyId}/start`)
+    },
+
+    leaveLobby() {
+        this.lobbyId = null
+        
+        return this.post(`/lobby/leave`)
     },
 
     sendMove(algebraic) {

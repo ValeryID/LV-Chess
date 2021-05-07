@@ -1,23 +1,30 @@
 <template>
     <div class='lobby-form'>
-        <div></div>
-        <label><b>Lobby: {{lobbyId}}</b></label>
-        <select v-model='hostColor'>
+        <div class='light-div'></div>
+        <label><b>Lobby: {{lobby ? lobby.id : '...'}}<br></b></label>
+        <label><b>Host: {{lobby ? lobby.host.name : '...'}}<br></b></label>
+        <label><b>Guest: {{lobby&&lobby.guest ? lobby.guest.name : '...'}}</b></label>
+        <label><b>Host color: </b></label>
+        <select v-model='hostColor' :disabled='!configEnabled()'>
             <option value='w'>white</option>
             <option value='b'>black</option>
         </select>
-        <select v-model='public'>
+        <label><b>Public: </b></label>
+        <select v-model='public' :disabled='!configEnabled()'>
             <option value='true'>true</option>
-            <option value='false'>false</option>
+            <!--<option value='false'>false</option>-->
         </select>
-        <input placeholder='Time limit' v-model='timeLimit' type='number'/>
-        <button @click='create'>Create</button>
-        <button @click='start'>Start</button>
+        <label><b>Time limit: </b></label>
+        <input placeholder='Time limit' v-model='timeLimit' type='number' :disabled='!configEnabled()'/>
+        <button @click='create' :disabled='isHost()'>Create</button>
+        <button @click='start' :disabled='!lobby || !isHost() || !lobby.guest'>Start</button>
+        <button @click='leave' :disabled='!lobby'>Leave</button>
     </div>
 </template>
 
 <script>
 import Network from '../modules/network'
+import Store from '../modules/storage'
 
 export default {
     props: [],
@@ -27,7 +34,20 @@ export default {
             hostColor: 'w',
             public: 'true',
             timeLimit: 900,
-            lobbyId: null
+            lobbyId: null,
+        }
+    },
+    computed: {
+        lobby() {
+            const lobby = Store.findLobbyById(this.lobbyId)
+
+            if(lobby) {
+                this.hostColor = lobby.host_color
+                this.public = lobby.public
+                this.timeLimit = lobby.time_limit
+            }
+
+            return lobby
         }
     },
     methods: {
@@ -39,6 +59,15 @@ export default {
         },
         start() {
             Network.startLobby()
+        },
+        leave() {
+            Network.leaveLobby()
+        },
+        isHost() {
+            return this.lobby && this.lobby.host.id === Network.user.id
+        },
+        configEnabled() {
+            return !this.lobby
         }
     },
     created() {

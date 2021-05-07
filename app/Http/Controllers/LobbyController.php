@@ -15,7 +15,7 @@ class LobbyController extends Controller
         $params = $request->only('public', 'hostColor', 'timeLimit');
         $lobby = Lobby::make($request->user(), $params);
 
-        return response($lobby, $lobby !== null ? 200 : 400);
+        return response($lobby, $lobby ? 200 : 403);
     }
 
     public function joinLobby(Request $request, Lobby $lobby)
@@ -23,22 +23,34 @@ class LobbyController extends Controller
         return $lobby->join($request->user()) ? response($lobby) : abort(403);
     }
 
+    public function leaveLobby(Request $request)
+    {
+        $userLobbies = $request->user()->lobbies();
+
+        if($userLobbies->count() === 0) abort(409);
+
+        $userLobbies->each(fn ($lobby) => $lobby->disconnectUser($request->user()));
+
+        return response()->json([
+            'count' => $userLobbies->count()
+        ]);
+    }
+
     public function startLobby(Request $request, Lobby $lobby)
     {
-        if(!Gate::allows('lobby-start-game', $lobby)) abort(403);
-        if($lobby->isStarted()) abort(409);
+        if(!Gate::allows('lobby-modify', $lobby)) abort(403);
+        if(!$lobby->isOpen()) abort(409);
 
         $game = $lobby->startGame();
         if(!$game) abort(400);
-
-        LobbyEvent::dispatch($lobby, 'started', $game);
 
         return response($game->getCard());
     }
 
     public function list(Request $request)
-    {//->where('guest_id', null)
-        return Lobby::where('public', 'true')->where('started', 'false')->get();
+    {
+        $collection = Lobby::where('public', 'true')->where('status', 'open')->get();
+        return $collection->map(fn ($item) => $item->getCard());
     }
 
     public function sendChatMessage(Request $request, Lobby $lobby)

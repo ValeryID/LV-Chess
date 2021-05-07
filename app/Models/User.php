@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 use App\Models\Interfaces\CardableInterface;
+use Illuminate\Database\Eloquent\Collection;
 
 class User extends Authenticatable implements CardableInterface
 {
@@ -50,5 +51,10 @@ class User extends Authenticatable implements CardableInterface
             $card[$prop] = $this->$prop;
             
         return $card;
+    }
+
+    public function lobbies(): Collection
+    {
+        return Lobby::where('host_id', $this->id)->orWhere('guest_id', $this->id)->get();
     }
 }

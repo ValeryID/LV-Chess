@@ -3,12 +3,13 @@
 namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
+use Illuminate\Support\Facades\Log;
 
 use App\Models\Game;
 
 class GameEvent extends BroadcastingEvent
 {
-    public $channel, $game, $type, $message;
+    public $game, $type, $message;
 
     /**
      * Create a new event instance.
@@ -19,7 +20,6 @@ class GameEvent extends BroadcastingEvent
     {
         parent::__construct();
 
-        $this->channel = "game.$game->id";
         $this->game = $game->getCard();
         $this->type = $type;
         $this->message = $message;
@@ -32,6 +32,7 @@ class GameEvent extends BroadcastingEvent
      */
     public function broadcastOn()
     {
-        return new Channel($this->channel);
+        return new Channel(in_array($this->type, ['created', 'updated', 'deleted'])
+        ? "lobby.{$this->game['lobby_id']}" : "game.{$this->game['id']}");
     }
 }

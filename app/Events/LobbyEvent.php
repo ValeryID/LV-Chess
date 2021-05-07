@@ -32,12 +32,9 @@ class LobbyEvent extends BroadcastingEvent
      */
     public function broadcastOn()
     {
-        $channels = [new Channel("lobby.{$this->lobby['id']}")];
+        $channelName = in_array($this->type, ['started', 'created', 'updated'])
+        ? 'lobbies' : "lobby.{$this->lobby['id']}";
 
-        if(in_array($this->type, ['started', 'created', 'updated'])) {
-            array_push($channels, new Channel("lobbies"));
-        }
-
-        return $channels;
+        return new Channel($channelName);
     }
 }

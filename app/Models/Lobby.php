@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Game;
 
 use App\Models\Interfaces\CardableInterface;
+use Illuminate\Support\Facades\Log;
 
 class Lobby extends Model implements CardableInterface
 {
@@ -20,6 +21,9 @@ class Lobby extends Model implements CardableInterface
 
     public static function make(User $user, array $params): ?Lobby
     {
+        $usersOpenLobbies = Lobby::where('host_id', $user->id)->where('status', 'open');
+        if($usersOpenLobbies->count() !== 0) return null;
+
         $lobby = new self();
         $lobby->host_id = $user->id;
         $lobby->public = $params['public'] ?? config('game.lobby.default.public');
@@ -35,9 +39,28 @@ class Lobby extends Model implements CardableInterface
         }
     }
 
+    public function disconnectUser(User $user): bool
+    {
+        switch($user->id) {
+            default: return false;
+            case $this->host_id: return $this->close();
+            case $this->guest_id: 
+                $this->guest_id = null;
+                return $this->save();
+        }
+    }
+
+    public function close(): bool
+    {
+        $this->status = 'closed';
+
+        return $this->save();
+    }
+
     public function join(User $user): bool
     {
-        if($this->guest_id !== null || $this->host_id == $user->id) return false;
+        if(in_array($user->id, [$this->host_id, $this->guest_id])) return true;
+        if($this->guest_id !== null) return false;
         return $this->setGuestUser($user);
     }
 
@@ -65,7 +88,7 @@ class Lobby extends Model implements CardableInterface
     {
         if($this->playersReady()) {
             $game = Game::make($this);
-            $this->started = 'true';
+            $this->status = 'started';
             $this->save();
             //$this->delete();
 
@@ -86,9 +109,9 @@ class Lobby extends Model implements CardableInterface
         }
     }
 
-    public function isStarted(): bool
+    public function isOpen(): bool
     {
-        return $this->started === 'true';
+        return $this->status === 'open';
     }
 
     public function userInLobby(User $user): bool
@@ -98,9 +121,12 @@ class Lobby extends Model implements CardableInterface
 
     public function getCard() 
     {
-        foreach(['guest_id', 'host_color', 'host_id', 'id', 'public', 'started', 'time_limit'] 
+        foreach(['host_color', 'id', 'public', 'status', 'time_limit'] 
         as $prop)
             $card[$prop] = $this->$prop;
+
+        $card['host'] = ($host = User::find($this->host_id)) ? $host->getCard() : null;
+        $card['guest'] = ($guest = User::find($this->guest_id)) ? $guest->getCard() : null;
             
         return $card;
     }

@@ -8,9 +8,9 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 use Illuminate\Support\Facades\Event;
 
 use App\Models\Lobby;
-use App\Models\GameMove;
+use App\Models\Game;
 use App\Observers\LobbyObserver;
-use App\Observers\GameMoveObserver;
+use App\Observers\GameObserver;
 use App\Events\LobbyEvent;
 
 class EventServiceProvider extends ServiceProvider
@@ -35,5 +35,6 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         Lobby::observe(LobbyObserver::class);
+        Game::observe(GameObserver::class);
     }
 }

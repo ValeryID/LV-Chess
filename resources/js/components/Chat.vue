@@ -8,28 +8,34 @@
         </div>
         <div class='controls-div'>
             <input @keyup.prevent='onKeyUp' v-model='message' type='text'>
-            <button @click='sendMessage'>Send</button>
+            <button @click='send'>Send</button>
         </div>
     </div>
 </template>
 
 <script>
+import Network from '../modules/network'
+
 export default {
-    props: ['messages'],
-    emits: ['message'],
+    props: [],
+    emits: [],
     data() {
         return {
+            messages: [],
             message: ''
         }
     },
     methods: {
-        sendMessage() {
-            this.$emit('message', this.message)
+        send() {
+            Network.sendChatMessage(this.message)
             this.message = ''
         },
         onKeyUp(e) {
-            if(e.keyCode === 13) this.sendMessage()
+            if(e.keyCode === 13) this.send()
         }
+    },
+    created() {
+        Network.listen('LobbyEvent', 'chatMessage', (event) => this.messages.push(event.message))
     }
 }
 </script>

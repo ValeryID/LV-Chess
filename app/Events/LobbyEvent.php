@@ -20,7 +20,7 @@ class LobbyEvent extends BroadcastingEvent
         parent::__construct();
 
         $this->class = $this->getClassName();
-        $this->lobby = $lobby;
+        $this->lobby = $lobby->getCard();
         $this->type = $type;
         $this->message = $message;
     }
@@ -32,7 +32,7 @@ class LobbyEvent extends BroadcastingEvent
      */
     public function broadcastOn()
     {
-        $channels = [new Channel("lobby.{$this->lobby->id}")];
+        $channels = [new Channel("lobby.{$this->lobby['id']}")];
 
         if(in_array($this->type, ['started', 'created', 'updated'])) {
             array_push($channels, new Channel("lobbies"));

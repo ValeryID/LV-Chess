@@ -3,28 +3,31 @@
         <div></div>
         <input placeholder='email' v-model='email' type='email'/>
         <input placeholder='password' v-model='password' type='password'/>
-        <span :class="[{'dot-active': loggedin}, 'dot']"></span>
+        <span :class="[{'dot-active': user}, 'dot']"></span>
         <button @click='login'>Login</button>
     </div>
 </template>
 
 <script>
+import Network from '../modules/network'
+
 export default {
-    props: ['loggedin'],
-    emits: ['login'],
+    props: [],
+    emits: [],
     data() {
         return {
             email: 'test@mail.com',
-            password: 'testpassword'
+            password: 'testpassword',
+            user: Network.user
         }
     },
     methods: {
         login() {
-            this.$emit('login', {
-                email: this.email,
-                password: this.password
-            })
+            Network.login(this.email, this.password)
         }
+    },
+    created() {
+        Network.listen(null, 'userChanged', (event) => this.user = event.message)
     }
 }
 </script>

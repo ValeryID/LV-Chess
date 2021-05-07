@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Game;
 
-class Lobby extends Model
+use App\Models\Interfaces\CardableInterface;
+
+class Lobby extends Model implements CardableInterface
 {
     use HasFactory;
 
@@ -92,5 +94,14 @@ class Lobby extends Model
     public function userInLobby(User $user): bool
     {
         return in_array($user->id, [$this->guest_id, $this->host_id]);
+    }
+
+    public function getCard() 
+    {
+        foreach(['guest_id', 'host_color', 'host_id', 'id', 'public', 'started', 'time_limit'] 
+        as $prop)
+            $card[$prop] = $this->$prop;
+            
+        return $card;
     }
 }

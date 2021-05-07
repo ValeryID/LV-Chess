@@ -15,11 +15,11 @@
 
         <div id="app">
             <div class='layout'>
-                <board @move='boardMove' :spritesheet='spritesheet' ref='board' width=600 height=600></board>
-                <login @login='login' :loggedin='loggedin'></login>
-                <lobby @create='createLobby' @start='startLobby' :lobbyid='lobbyid'></lobby>
-                <lobbylist @lobbyselected='join' :lobbies='lobbies'></lobbylist>
-                <chat @message='sendChatMessage' :messages='messages'></chat>
+                <board></board>
+                <login></login>
+                <lobby></lobby>
+                <lobbylist></lobbylist>
+                <chat></chat>
             </div>
         </div>
         

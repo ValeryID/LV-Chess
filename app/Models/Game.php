@@ -10,7 +10,9 @@ use Illuminate\Support\Carbon;
 use App\Models\Lobby;
 use App\Models\GameMove;
 
-class Game extends Model
+use App\Models\Interfaces\CardableInterface;
+
+class Game extends Model implements CardableInterface
 {
     use HasFactory;
 
@@ -147,5 +149,14 @@ class Game extends Model
         }
 
         return $playerMoves;
+    }
+
+    public function getCard() 
+    {
+        foreach(['id', 'white_player_id', 'black_player_id', 'turn', 'result', 'lobby_id'] 
+        as $prop)
+            $card[$prop] = $this->$prop;
+            
+        return $card;
     }
 }

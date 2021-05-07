@@ -19,10 +19,10 @@ class AuthController extends Controller//$request->user()
         if ($user && Hash::check($password, $user->password)) {
             Auth::login($user);
             
-            return response(['status' => 'success']);
+            return response($user->getCard());
         }
 
-        return response(['status'=>'fail'], 403);
+        return response(['reason' => $user ? 'password' : 'email'], 403);
     }
     
     public function test(Request $request)

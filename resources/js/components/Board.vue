@@ -5,16 +5,18 @@
 </template>
 
 <script>
-import Renderer from '../renderer';
+import Network from '../modules/network';
+import Renderer from '../modules/renderer';
 import Chess from '../lib/chess';
 
 export default {
-    props: ['width', 'height', 'spritesheet'],
-    emits: ['login'],
+    props: [],
+    emits: [],
     data() {
         return {
-            email: 'test@mail.com',
-            password: 'testpassword'
+            width: '600',
+            height: '600',
+            spriteSheet: new Image()
         }
     },
     methods: {
@@ -23,15 +25,15 @@ export default {
         },
 
         render() {
-            this.renderer.render()
+            Renderer.render()
         },
 
         reset() {
             this.ceilSelected = null
             this.color = null
             this.engine.reset()
-            this.renderer.setBoard(this.engine.board())
-            this.renderer.setMove(null)
+            Renderer.setBoard(this.engine.board())
+            Renderer.setMove(null)
         },
 
         setColor(color) {
@@ -67,8 +69,8 @@ export default {
             if(move) {
                 let arrayStart = this.algebraicToArray(algebraicStart)
                 let arrayEnd = this.algebraicToArray(algebraicEnd)
-                this.renderer.setBoard(this.engine.board())
-                this.renderer.setMove({start: arrayStart, end: arrayEnd, take: take})
+                Renderer.setBoard(this.engine.board())
+                Renderer.setMove({start: arrayStart, end: arrayEnd, take: take})
             }
 
             return move
@@ -76,22 +78,15 @@ export default {
 
         load(fen) {
             if(this.engine.load(fen)) {
-                this.renderer.setBoard(this.engine.board())
+                Renderer.setBoard(this.engine.board())
                 return true
             }
 
             return false
         },
 
-        login() {
-            this.$emit('login', {
-                email: this.email,
-                password: this.password
-            })
-        },
-
         onClick(e) {
-            let boardPos = this.renderer.getCeil(e.offsetX, e.offsetY);
+            let boardPos = Renderer.getCeil(e.offsetX, e.offsetY);
             console.log(this.arrayToAlgebraic(boardPos), this.getPiece(boardPos), this.ceilSelected)
 
             if(this.ceilSelected) {
@@ -99,24 +94,34 @@ export default {
                 let algebraicEnd = this.arrayToAlgebraic(boardPos)
 
                 if(this.tryMove(algebraicStart, algebraicEnd)) 
-                    this.$emit('move', algebraicStart + algebraicEnd)
+                    Network.sendMove(algebraicStart + algebraicEnd)
                 
                 this.ceilSelected = null
-                this.renderer.setCursor(null)
+                Renderer.setCursor(null)
 
             } else {
                 let piece = this.getPiece(boardPos)
                 if(piece && piece.color === this.color) {
                     this.ceilSelected = boardPos
-                    this.renderer.setCursor(this.ceilSelected)
+                    Renderer.setCursor(this.ceilSelected)
                 }
             }
         }
     },
-    mounted() {
+    async mounted() {
         this.canvas = document.querySelector('#board-canvas')
-        this.renderer = new Renderer(this.canvas, this.spritesheet)
+        Renderer.init(this.canvas, this.spriteSheet)
         this.engine = new Chess()
+
+        Network.listen('GameEvent', 'move', (event) => this.makeMove(event.message))
+        Network.listen('LobbyEvent', 'started', () => this.reset())
+        Network.listen(null, 'userColor', (event) => this.setColor(event.message))
+
+        this.spriteSheet = await new Promise((resolve, reject) => {
+            this.spriteSheet.onload = () => resolve(this.spriteSheet)
+            this.spriteSheet.onerror = () => reject()
+            this.spriteSheet.src = '/images/spritesheet.png'
+        })
 
         this.init()
     }

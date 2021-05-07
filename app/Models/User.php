@@ -8,7 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+use App\Models\Interfaces\CardableInterface;
+
+class User extends Authenticatable implements CardableInterface
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -41,4 +43,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getCard() 
+    {
+        foreach(['id', 'name', 'rating'] as $prop)
+            $card[$prop] = $this->$prop;
+            
+        return $card;
+    }
 }

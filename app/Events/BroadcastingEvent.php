@@ -39,7 +39,7 @@ class BroadcastingEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('public');
+        return [];
     }
 
 }

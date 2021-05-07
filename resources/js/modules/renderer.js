@@ -1,5 +1,5 @@
-export default class Renderer {
-    constructor(canvas, spriteSheet) {
+export default {
+    init(canvas, spriteSheet) {
         this.canvas = canvas
         this.spriteSheet = spriteSheet
         this.ctx = this.canvas.getContext('2d')
@@ -10,17 +10,17 @@ export default class Renderer {
         this.pieceSize = this.spriteWidth * this.scale;
 
         this.board = this.cursor = this.moveStart = this.moveEnd = null;
-    }
+    },
 
     clear() {
         this.ctx.fillStyle = "#000";
         this.ctx.fillRect(0, 0, this.width, this.height);
-    }
+    },
 
     getCeil(x, y) {
         let transform = (a) => Math.floor(a / (this.spriteWidth * this.scale))
         return [transform(x), 7-transform(y)]
-    }
+    },
 
     renderPiece(sx, sy, bx, by) {
         this.ctx.drawImage(this.spriteSheet, 
@@ -28,7 +28,7 @@ export default class Renderer {
             this.spriteWidth, this.spriteWidth, 
             bx * this.pieceSize, by * this.pieceSize, 
             this.pieceSize, this.pieceSize)
-    }
+    },
 
     resize(sx, sy) {
         let newWidth = 80
@@ -38,13 +38,13 @@ export default class Renderer {
             oldWidth, oldWidth, 
             sx * oldWidth + (oldWidth - newWidth) / 2, sy * oldWidth  + (oldWidth - newWidth) / 2, 
             newWidth, newWidth)
-    }
+    },
 
     render() {
         this.renderBoard()
         this.renderCursor()
         this.renderMove()
-    }
+    },
 
     renderBoard() {
         if(!this.board) return
@@ -70,7 +70,7 @@ export default class Renderer {
             }
         }
         
-    }
+    },
 
     renderCursor() {
         if(!this.cursor) return false;
@@ -78,7 +78,7 @@ export default class Renderer {
         this.renderPiece(6, 1, this.cursor[0], 7-this.cursor[1])
 
         return true;
-    }
+    },
 
     renderMove() {
         if(!this.move) return
@@ -94,20 +94,20 @@ export default class Renderer {
             this.move.end[0] * this.pieceSize + this.pieceSize / 2, 
             this.height - this.move.end[1] * this.pieceSize - this.pieceSize / 2)
         this.ctx.stroke()
-    }
+    },
 
     setBoard(board) {
         this.board = board
         this.render()
-    }
+    },
 
     setCursor(cursor) {
         this.cursor = cursor
         this.render()
-    }
+    },
 
     setMove(move) {
         this.move = move
         this.render()
-    }
+    },
 }

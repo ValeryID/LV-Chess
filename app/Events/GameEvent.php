@@ -20,7 +20,7 @@ class GameEvent extends BroadcastingEvent
         parent::__construct();
 
         $this->channel = "game.$game->id";
-        $this->game = $game;
+        $this->game = $game->getCard();
         $this->type = $type;
         $this->message = $message;
     }

@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LobbyController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\UserController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,9 +25,7 @@ Route::post('/login', [AuthController::class, 'authenticate']);
 Route::get('/lobby/list', [LobbyController::class, 'list']);
 
 Route::middleware('auth')->group(function() {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+    Route::get('/user/{user?}', [UserController::class, 'getUserCard']);
 
     Route::post('/lobby/make', [LobbyController::class, 'makeLobby']);
     Route::post('/lobby/{lobby}/join', [LobbyController::class, 'joinLobby']);

@@ -1,7 +1,7 @@
 <template>
     <div class='lobby-form'>
         <div></div>
-        <label><b>Lobby: {{lobbyid}}</b></label>
+        <label><b>Lobby: {{lobbyId}}</b></label>
         <select v-model='hostColor'>
             <option value='w'>white</option>
             <option value='b'>black</option>
@@ -17,27 +17,32 @@
 </template>
 
 <script>
+import Network from '../modules/network'
+
 export default {
-    props: ['lobbyid'],
-    emits: ['start', 'create'],
+    props: [],
+    emits: [],
     data() {
         return {
             hostColor: 'w',
             public: 'true',
-            timeLimit: 900
+            timeLimit: 900,
+            lobbyId: null
         }
     },
     methods: {
         create() {
-            this.$emit('create', {
-                hostColor: this.hostColor,
-                public: this.public,
-                timeLimit: this.timeLimit
-            })
+            Network.makeLobby(
+                this.hostColor, 
+                this.public,
+                this.timeLimit)
         },
         start() {
-            this.$emit('start')
+            Network.startLobby()
         }
+    },
+    created() {
+        Network.listen(null, 'newLobbyId', (event) => this.lobbyId = event.message)
     }
 }
 </script>

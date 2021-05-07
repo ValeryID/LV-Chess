@@ -33,7 +33,7 @@ class LobbyController extends Controller
 
         LobbyEvent::dispatch($lobby, 'started', $game);
 
-        return response($game);
+        return response($game->getCard());
     }
 
     public function list(Request $request)

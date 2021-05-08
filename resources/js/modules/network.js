@@ -1,53 +1,51 @@
+import Store from '../modules/storage'
+
 export default {
     echo: null,
     listeners: [],
-    gameId: null,
-    _user: null,
-    _lobbyId: null,
 
     init(echo) {
         this.echo = echo
         this.listeners = []
-        this.gameId = null
 
         this.syncUser()
 
         this.echo.channel(`lobbies`).listen('LobbyEvent', (e)=>this.onLobbyEvent(e))
     },
 
-    set user(a) {
-        this._user = a
-        this.dispatch({
-            class: null,
-            type: 'userChanged',
-            message: this._user
-        })
-    },
+    // set user(a) {
+    //     this._user = a
+    //     this.dispatch({
+    //         class: null,
+    //         type: 'userChanged',
+    //         message: this._user
+    //     })
+    // },
 
-    get user() {
-        return this._user
-    },
+    // get user() {
+    //     return this._user
+    // },
 
-    set lobbyId(a) {
-        this._lobbyId = a
-        this.dispatch({
-            class: null,
-            type: 'newLobbyId',
-            message: this._lobbyId
-        })
-    },
+    // set lobbyId(a) {
+    //     this._lobbyId = a
+    //     this.dispatch({
+    //         class: null,
+    //         type: 'newLobbyId',
+    //         message: this._lobbyId
+    //     })
+    // },
 
-    get lobbyId() {
-        return this._lobbyId
-    },
+    // get lobbyId() {
+    //     return this._lobbyId
+    // },
 
     syncUser() {
-        this.getUser().then(user => this.user = user, err => this.user = null)
+        this.getUser().then(user => Store.state.user = user, err => Store.state.user = null)
     },
 
     sendAxiosRequest(request) {
         return request().then(d=>d, e=>{
-            if([401, 419].includes(e.response.status)) this.user = null
+            if([401, 419].includes(e.response.status)) Store.state.user = null
 
             return new Promise((res, rej) => rej(e.response.status))
         })
@@ -95,16 +93,16 @@ export default {
     },
 
     listenLobbyChannel(id) {
-        if(this.lobbyId) this.echo.leave(`lobby.${this.lobbyId}`)
-        this.lobbyId = id
+        if(Store.state.lobbyId) this.echo.leave(`lobby.${Store.state.lobbyId}`)
+        Store.state.lobbyId = id
         this.echo.channel(`lobby.${id}`)
             .listen('LobbyEvent', (e)=>this.onLobbyEvent(e))
             .listen('GameEvent', (e)=>this.onGameEvent(e))
     },
 
     listenGameChannel(id) {
-        if(this.gameId) this.echo.leave(`game.${this.gameId}`)
-        this.gameId = id
+        if(Store.state.gameId) this.echo.leave(`game.${Store.state.gameId}`)
+        Store.state.gameId = id
         this.getColor()
         this.echo.channel(`game.${id}`)
             .listen('LobbyEvent', (e)=>this.onLobbyEvent(e))
@@ -112,7 +110,7 @@ export default {
     },
 
     getColor() {
-        let promise = this.get(`/game/${this.gameId}/getcolor`)
+        let promise = this.get(`/game/${Store.state.gameId}/getcolor`)
         promise.then((response)=>this.dispatch({
             class: null,
             type: 'userColor',
@@ -124,7 +122,7 @@ export default {
 
     login(email, password) {
         return this.post('/login', {email: email, password: password})
-        .then(resp => this.user = resp.data, err => new Promise((res, rej) => rej(err)))
+        .then(resp => Store.state.user = resp.data, err => new Promise((res, rej) => rej(err)))
     },
 
     joinLobby(lobbyId) {
@@ -143,39 +141,39 @@ export default {
             timeLimit: timeLimit
         })
         promise.then((response) => {
-            this.lobbyId = response.data.id
-            this.listenLobbyChannel(this.lobbyId)
+            Store.state.lobbyId = response.data.id
+            this.listenLobbyChannel(Store.state.lobbyId)
         })
         
         return promise
     },
 
-    startLobby(lobbyId=this.lobbyId) {
+    startLobby(lobbyId=Store.state.lobbyId) {
         return this.post(`/lobby/${lobbyId}/start`)
     },
 
     leaveLobby() {
-        this.lobbyId = null
-        
-        return this.post(`/lobby/leave`)
+        return this.post(`/lobby/leave`).then(resp => Store.state.lobbyId = null)
     },
 
     sendMove(algebraic) {
-        return this.post(`/game/${this.gameId}/move`, { algebraic: algebraic })
+        return this.post(`/game/${Store.state.gameId}/move`, { algebraic: algebraic })
     },
 
     sendTimeOver(color) {
-        return this.get(`/game/${this.gameId}/timeover/${color}`)
+        return this.get(`/game/${Store.state.gameId}/timeover/${color}`)
             .then(data=>console.log(data))
     },
 
     sendVictory(color) {
-        return this.get(`/game/${this.gameId}/victory/${color}`)
+        return this.get(`/game/${Store.state.gameId}/victory/${color}`)
             .then(data=>console.log(data))
     },
 
     sendChatMessage(message) {
-        return this.post(`/lobby/${this.lobbyId}/chat`, { message: message })
+        if(!Store.lobby()) return;
+
+        return this.post(`/lobby/${Store.lobby().id}/chat`, { message: message })
     },
 
     getLobbies() {

@@ -34,12 +34,12 @@ export default {
             hostColor: 'w',
             public: 'true',
             timeLimit: 900,
-            lobbyId: null,
         }
     },
     computed: {
         lobby() {
-            const lobby = Store.findLobbyById(this.lobbyId, 'open')
+            const lobby = Store.lobby()//Store.findLobbyById(Store.state.lobbyId, 'open')
+            console.log(lobby)
 
             if(lobby) {
                 this.hostColor = lobby.host_color
@@ -64,7 +64,7 @@ export default {
             Network.leaveLobby()
         },
         isHost() {
-            return this.lobby && this.lobby.host.id === Network.user.id
+            return this.lobby && Store.state.user && this.lobby.host.id === Store.state.user.id
         },
         configEnabled() {
             return !this.isLobbyOpen()
@@ -73,8 +73,8 @@ export default {
             return this.lobby && this.lobby.status === 'open'
         }
     },
-    created() {
-        Network.listen(null, 'newLobbyId', (event) => this.lobbyId = event.message)
-    }
+    // created() {
+    //     Network.listen(null, 'newLobbyId', (event) => this.lobbyId = event.message)
+    // }
 }
 </script>

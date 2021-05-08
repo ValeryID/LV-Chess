@@ -28,9 +28,9 @@ export default {
         lobbies() {
             for(let lobby of Store.state.lobbies) {
                 if(lobby.status === 'open' &&
-                !Network.lobbyId && 
-                Network.user && 
-                [lobby.host.id, lobby.guest?lobby.guest.id:{}].includes(Network.user.id)) 
+                !Store.state.lobbyId && 
+                Store.state.user && 
+                [lobby.host.id, lobby.guest?lobby.guest.id:{}].includes(Store.state.user.id)) 
                     this.join(lobby.id);
             }
             

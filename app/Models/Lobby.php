@@ -21,8 +21,9 @@ class Lobby extends Model implements CardableInterface
 
     public static function make(User $user, array $params): ?Lobby
     {
-        $usersOpenLobbies = Lobby::where('host_id', $user->id)->where('status', 'open');
-        if($usersOpenLobbies->count() !== 0) return null;
+        // $usersOpenLobbies = Lobby::where('host_id', $user->id)->where('status', 'open');
+        // if($usersOpenLobbies->count() !== 0) return null;
+        $user->leaveLobbies();
 
         $lobby = new self();
         $lobby->host_id = $user->id;

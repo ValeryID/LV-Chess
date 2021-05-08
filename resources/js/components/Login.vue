@@ -10,6 +10,7 @@
 
 <script>
 import Network from '../modules/network'
+import Store from '../modules/storage'
 
 export default {
     props: [],
@@ -17,8 +18,12 @@ export default {
     data() {
         return {
             email: 'test@mail.com',
-            password: 'testpassword',
-            user: Network.user
+            password: 'testpassword'
+        }
+    },
+    computed: {
+        user() {
+            return Store.state.user
         }
     },
     methods: {
@@ -26,8 +31,8 @@ export default {
             Network.login(this.email, this.password)
         }
     },
-    created() {
-        Network.listen(null, 'userChanged', (event) => this.user = event.message)
-    }
+    // created() {
+    //     Network.listen(null, 'userChanged', (event) => this.user = event.message)
+    // }
 }
 </script>

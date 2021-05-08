@@ -3,7 +3,10 @@ import Vuex from 'vuex'
 let Store = Vuex.createStore({
     state () {
         return {
-          lobbies: []
+          lobbies: [],
+          lobbyId: null,
+          gameId: null,
+          user: null
         }
     },
     mutations: {
@@ -13,9 +16,12 @@ let Store = Vuex.createStore({
 
 const State = Store.state
 
-Store.findLobbyById = (id, status=null) => {
-    return State.lobbies.find((lobby) => lobby.id === id && (!status || lobby.status===status))
+Store.findLobbyById = (id, status=[]) => {
+    return State.lobbies.find(
+        (lobby) => lobby.id === id && (status.length === 0 || status.includes(lobby.status)))
 }
+
+Store.lobby = () => Store.findLobbyById(State.lobbyId, ['open', 'started'])
 
 Store.openLobbies = (id) => State.lobbies.filter(lobby => lobby.status === 'open')
 

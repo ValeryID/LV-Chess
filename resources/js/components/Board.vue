@@ -26,8 +26,8 @@ export default {
             width: '600',
             height: '600',
             spriteSheet: new Image(),
-            whitePlayerTime: 900,
-            blackPlayerTime: 900,
+            whitePlayerTime: null,
+            blackPlayerTime: null,
             started: false,
             result: null
         }
@@ -59,7 +59,7 @@ export default {
             Renderer.setBoard(this.engine.board())
             Renderer.setMove(null)
 
-            const lobby = Store.findLobbyById(Network.lobbyId)
+            const lobby = Store.lobby()
 
             if(lobby) {
                 console.log('ggg', this.whitePlayerTime = this.blackPlayerTime = lobby.time_limit)

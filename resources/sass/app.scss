@@ -2,81 +2,6 @@
 
 @import 'variables';
 
-@mixin clean-font {
-  all: initial;
-  @include font();
-}
-
-@mixin font {
-  font: 20px sans-serif;
-}
-
-@mixin light-div($height, $width) {
-	$col: $form-background-light;
-	background-color: $col;
-	border: 3px solid $col;
-	z-index: 1;
-	position: absolute;
-	border-radius: 6px;
-	border-bottom-left-radius: 0;
-	border-bottom-right-radius: 0;
-	width: $width;
-	height: $height;
-	padding: 5px 10px 10px 10px;
-	top: -3px;
-	left: -3px;
-}
-
-@mixin form-div($height, $width) {
-	@include clean-font();
-	flex-shrink: 0;
-	$col: $form-background-dark;
-	background-color: $col;
-	border: 3px solid $col;
-	box-shadow: 0px 0px 4px 0px rgb(68, 68, 68);
-	border-radius: 6px;
-	display: block;
-	width: $width;
-	height: $height;
-	padding: 3px 10px 10px 10px;
-	position: relative;
-	overflow: clip;
-}
-
-@mixin light-dark-div($height, $width:230px, $dark-div-height:55px) {
-	@include form-div($height, $width);
-	
-	.light-div {
-		@include light-div($height - $dark-div-height, $width);
-	}
-}
-
-@mixin standart-input() {
-	@include clean-font();
-	position: relative;
-	z-index: 100;
-	background-color: #f4ffeb;
-	outline: 1px solid black;
-	box-shadow: 0px 0px 4px 0px rgb(68, 68, 68);
-	width: 100%;
-	padding: 4px;
-	padding-left: 8px;
-	margin-top: 5px;
-	box-sizing: border-box;
-	transition: all .16s;
-	&:hover {
-		background-color: #eaffd7;
-	}
-	&:focus {
-		background-color: #e7fdb3;
-		outline-width: 2px;
-	}
-	&:disabled {
-		box-shadow: 0px 0px 6px 0px rgb(0, 0, 0) inset;
-		background-color: #bbabab;
-	}
-}
-
 body {
   @include font();
 }
@@ -88,40 +13,43 @@ body {
 
 button {
 	@include clean-font();
-
-	$border: 2px solid black;
-	$color-defaul: burlywood;
-	$color-hover: #daa35b;
-	$color-active: #cc8a35;
-
 	width: 80px;
 	text-align: center;
 	cursor: pointer;
 	border-radius: 6px;
 	padding: 5px;
 	float: right;
+	position: relative;
+	
 
-	$col: $color-defaul;
+	$col: $button-color-default;
 	background-color: $col;
-	border: $border;
+	
+	border: $button-border;
+	top: -$button-z-height;
+	box-shadow: 0px $button-z-height  2px 0 rgb(0, 0, 0);
+	@include button-background($button-color-default);
 	transition: all .16s;
 
 	&:hover {
-  		$col: $color-hover;
-		background-color: $col;
+  		$col: $button-color-hover;
+		@include button-background($button-color-hover);
 	}
 	&:focus {
-		box-shadow: 0px 0px 6px 0px rgb(255, 255, 255);
+		@include button-background($button-color-hover);
+		//box-shadow: 0px 0px 6px 0px rgb(255, 255, 255);
 	}
 	&:active {
-		$col: $color-active;
-		background-color: $col;
+		top: 0px;
+		$col: $button-color-active;
+		@include button-background($col);
 		box-shadow: 0px 0px 6px 0px rgb(0, 0, 0) inset;
 	}
 	&:disabled {
+		top: 0px;
 		cursor: default;
 		box-shadow: 0px 0px 6px 0px rgb(0, 0, 0) inset;
-		background-color: #bbabab;
+		background-color: $button-color-disabled;
 	}
 }
 
@@ -178,17 +106,36 @@ textarea {
 
 .lobby-list {
 	@include form-div(600px, 300px);
-	overflow-y: scroll;
-}
+	padding-top: 10px;
 
-.lobby-list-item {
-	@include font();
-	text-align: left;
-	width: 100%;
-	padding: 5px;
-	margin-bottom: 6px;
-	margin-top: 0px;
-	box-sizing: border-box;
+	.slider-div {
+		z-index: 1;
+		top: 2px;
+		left: 2px;
+		padding: 10px;
+		position: absolute;
+		overflow-y: scroll;
+		height: 99%;
+		width: 99%;
+		background-color: #8f8f8f;
+		box-shadow: 0 0 6px 0 rgb(0, 0, 0) inset;
+		box-sizing: border-box;
+	}
+
+	.lobby-list-item {
+		$button-z-height: 2px;
+
+		@include font();
+		z-index: 100;
+		position: relative;
+		text-align: left;
+		width: 100%;
+		padding: 5px;
+		margin-bottom: 6px;
+		margin-top: 3px;
+		box-sizing: border-box;
+		
+	}
 }
 
 .login-form {
@@ -223,7 +170,7 @@ textarea {
 	@include light-dark-div(312px, 297px);
 
 	button {
-		margin-top: 18px;
+		margin-top: 31px;
 		margin-left: 0px;
 		margin-right: 5px;
 	}
@@ -231,7 +178,7 @@ textarea {
 	label {
 		display: block;
 		position: relative;
-		margin-top: 5px;
+		margin-top: 3px;
 		z-index: 100;
 	}
 

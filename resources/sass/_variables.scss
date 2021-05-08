@@ -1,11 +1,95 @@
-// Body
-$body-bg: #f8fafc;
+@mixin clean-font {
+    all: initial;
+    @include font();
+}
 
-// Typography
-$font-family-sans-serif: 'Nunito', sans-serif;
-$font-size-base: 0.9rem;
-$line-height-base: 1.6;
+@mixin font {
+    font: 20px sans-serif;
+}
+
+@mixin light-div($height, $width) {
+    $col: $form-background-light;
+    background-color: $col;
+    border: 3px solid $col;
+    box-shadow: 0px 0px 6px 0px rgb(68, 68, 68);
+    z-index: 1;
+    position: absolute;
+    border-radius: 16px;
+    //border-bottom-left-radius: 0;
+    //border-bottom-right-radius: 0;
+    width: $width;
+    height: $height;
+    padding: 5px 10px 10px 10px;
+    top: -3px;
+    left: -3px;
+}
+
+@mixin form-div($height, $width) {
+    @include clean-font();
+    flex-shrink: 0;
+    $col: $form-background-dark;
+    background-color: $col;
+    border: 3px solid $col;
+    box-shadow: 0px 0px 4px 0px rgb(68, 68, 68);
+    border-radius: 6px;
+    display: block;
+    width: $width;
+    height: $height;
+    padding: 3px 10px 10px 10px;
+    position: relative;
+    overflow: clip;
+}
+
+@mixin light-dark-div($height, $width:230px, $dark-div-height:55px) {
+    @include form-div($height, $width);
+    
+    .light-div {
+        @include light-div($height - $dark-div-height, $width);
+    }
+}
+
+@mixin standart-input() {
+    @include clean-font();
+    position: relative;
+    z-index: 100;
+    background-color: #f4ffeb;
+    outline: 1px solid black;
+    box-shadow: 0px 0px 4px 0px rgb(68, 68, 68);
+    width: 100%;
+    padding: 4px;
+    padding-left: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    transition: all .16s;
+    &:hover {
+        background-color: #eaffd7;
+    }
+    &:focus {
+        background-color: #e7fdb3;
+        outline-width: 2px;
+    }
+    &:disabled {
+        box-shadow: 0px 0px 6px 0px rgb(0, 0, 0) inset;
+        background-color: #bbabab;
+    }
+}
+
+@mixin button-background($color) {
+    background: radial-gradient(
+        circle, 
+        $color 0%, 
+        scale-color($color, $lightness: -5%) 100%);
+}
 
 //app
 $form-background-dark: #a0a0a0;
 $form-background-light: #c0c0c0;
+
+$button-z-height: 1px;
+$button-border: 2px solid black;
+$button-color-default: #e2cfaa;
+$button-color-hover: scale-color($button-color-default, $lightness: -12%);
+$button-color-active: scale-color($button-color-default, $lightness: -24%);
+$button-color-disabled: #bbabab;
+
+//@error scale-color($button-color-default, $lightness: -100%);

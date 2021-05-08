@@ -18,7 +18,9 @@ class CreateGamesTable extends Migration
             $table->unsignedBigInteger('white_player_id');
             $table->unsignedBigInteger('black_player_id');
             $table->enum('turn', ['w', 'b'])->default('w');
-            $table->enum('result', ['w', 'b'])->nullable();
+            $table->enum('result', ['w', 'b', 'error'])->nullable();
+            $table->enum('white_player_result', ['w', 'b'])->nullable();
+            $table->enum('black_player_result', ['w', 'b'])->nullable();
             $table->timestamps();
 
             $table->foreign('white_player_id')->references('id')->on('users');

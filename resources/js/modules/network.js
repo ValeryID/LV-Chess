@@ -169,6 +169,11 @@ export default {
             .then(data=>console.log(data))
     },
 
+    sendVictory(color) {
+        return this.get(`/game/${this.gameId}/victory/${color}`)
+            .then(data=>console.log(data))
+    },
+
     sendChatMessage(message) {
         return this.post(`/lobby/${this.lobbyId}/chat`, { message: message })
     },

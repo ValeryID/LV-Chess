@@ -33,6 +33,8 @@ class Game extends Model implements CardableInterface
 
     public function makeMove(string $move): bool
     {
+        if($this->result) return false;
+
         try {
             GameMove::create([
                 'game_id' => $this->id,
@@ -71,6 +73,22 @@ class Game extends Model implements CardableInterface
         }
 
         return $elapsedTime;
+    }
+
+    public function victoryReport(User $user, string $color): bool
+    {
+        switch($this->getPlayerColor($user)) {
+            case 'w': $this->white_player_result = $color; break;
+            case 'b': $this->black_player_result = $color; break;
+            default: return false;
+        }
+
+        if($this->white_player_result !== null && $this->black_player_result !== null) {
+            if($this->white_player_result === $this->black_player_result) $this->result = $color;
+            else $this->result = 'error';
+        }
+
+        return $this->save();
     }
 
     public function isPlayerTimeOver(User $user): bool

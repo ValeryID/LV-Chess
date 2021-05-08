@@ -1,6 +1,6 @@
 <template>
     <div class='lobby-list' @click='test'>
-        <div v-if='lobbies.length > 0'>
+        <div v-if='openLobbies().length > 0'>
             <template v-for='lobby in lobbies'>
                 <button v-if="lobby.status === 'open'" @click='join(lobby.id)' class='lobby-list-item'>
                     {{`${lobby.id}. ${1 + (lobby.guest !== null)}/2`}}<br>
@@ -41,8 +41,8 @@ export default {
         join(lobbyId) {
             Network.joinLobby(lobbyId)
         },
-        test() {
-            console.log(this.lobbies)
+        openLobbies() {
+            return Store.openLobbies()
         }
     },
     created() {

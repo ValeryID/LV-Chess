@@ -83,7 +83,12 @@ export default {
     renderMove() {
         if(!this.move) return
 
-        this.ctx.strokeStyle = this.move.take ? '#ff6633' : '#99ff33'
+        switch(this.move.type) {
+            case 'move': this.ctx.strokeStyle = '#99ff33'; break;
+            case 'take': this.ctx.strokeStyle = '#ff6633'; break;
+            case 'promotion': this.ctx.strokeStyle = '#8616ab'; break;
+        }
+
         this.ctx.lineWidth = 5;
 
         this.ctx.beginPath()

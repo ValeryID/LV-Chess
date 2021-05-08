@@ -17,4 +17,6 @@ Store.findLobbyById = (id) => {
     return State.lobbies.find((lobby) => lobby.id === id)
 }
 
+Store.openLobbies = (id) => State.lobbies.filter(lobby => lobby.status === 'open')
+
 export default Store

@@ -1,6 +1,12 @@
 <template>
     <div class='board'>
-        <canvas @click='onClick' id='board-canvas' :width='width' :height='width'></canvas>
+        <div class='canvas-div'>
+            <div v-if='!started' :style="{width: width + 'px', height: height + 'px'}">
+                <label v-if='result'><b>{{result}} player wins</b></label>
+            </div>
+            <div class='shadow' :style="{width: width + 'px', height: height + 'px'}"></div>
+            <canvas @click='onClick' id='board-canvas' :width='width' :height='width'/>
+        </div>
         <div style='color: white'>{{Math.max(whitePlayerTime, 0)}}</div>
         <div style='color: white'>{{Math.max(blackPlayerTime, 0)}}</div>
     </div>
@@ -22,7 +28,8 @@ export default {
             spriteSheet: new Image(),
             whitePlayerTime: 900,
             blackPlayerTime: 900,
-            started: false
+            started: false,
+            result: null
         }
     },
     methods: {
@@ -44,6 +51,7 @@ export default {
 
         restart() {
             this.started = true
+            this.result = null
 
             this.ceilSelected = null
             this.color = null
@@ -51,13 +59,22 @@ export default {
             Renderer.setBoard(this.engine.board())
             Renderer.setMove(null)
 
-            let lobby = Store.findLobbyById(Network.lobbyId)
+            const lobby = Store.findLobbyById(Network.lobbyId)
 
-            console.log('!!!', Network.lobbyId)
             if(lobby) {
                 console.log('ggg', this.whitePlayerTime = this.blackPlayerTime = lobby.time_limit)
             }
             
+        },
+
+        finishGame(result) {
+            this.started = false
+
+            switch(result) {
+                case 'w': this.result = 'White'; break;
+                case 'b': this.result = 'Black'; break;
+                default: this.result = '***'; break;
+            }
         },
 
         setColor(color) {
@@ -77,25 +94,38 @@ export default {
         },
 
         tryMove(algebraicStart, algebraicEnd) {
-            let move = this.engine.move({ from: algebraicStart, to: algebraicEnd })
-            console.log(move)
-            if(move) this.engine.undo()
-            return move
+            let move = {}
+            let result = this.engine.move(move = { from: algebraicStart, to: algebraicEnd })
+            if(!result) result = this.engine.move(move = { from: algebraicStart, to: algebraicEnd, promotion: 'q' })
+            
+            if(result) this.engine.undo()
+
+            return result ? move : null
         },
 
         makeMove(algebraic) {
-            let algebraicStart = algebraic.slice(0, 2)
-            let algebraicEnd = algebraic.slice(2, 4)
+            const playerColor = this.engine.turn()
+            let type = 'move';
 
-            let take = this.engine.get(algebraicEnd) !== null
-            let move = this.engine.move({ from: algebraicStart, to: algebraicEnd })
+            const algebraicStart = algebraic.slice(0, 2)
+            const algebraicEnd = algebraic.slice(2, 4)
+
+            if(this.engine.get(algebraicEnd) !== null) type = 'take'
+
+            let move = this.tryMove(algebraicStart, algebraicEnd)
             
             if(move) {
-                let arrayStart = this.algebraicToArray(algebraicStart)
-                let arrayEnd = this.algebraicToArray(algebraicEnd)
+                this.engine.move(move)
+
+                if(move.promotion) type = 'promotion'
+
+                const arrayStart = this.algebraicToArray(algebraicStart)
+                const arrayEnd = this.algebraicToArray(algebraicEnd)
                 Renderer.setBoard(this.engine.board())
-                Renderer.setMove({start: arrayStart, end: arrayEnd, take: take})
+                Renderer.setMove({start: arrayStart, end: arrayEnd, type: type})
             }
+
+            if(this.engine.game_over()) Network.sendVictory(playerColor)
 
             return move
         },
@@ -139,6 +169,10 @@ export default {
 
         Network.listen('GameEvent', 'move', (event) => this.makeMove(event.message))
         Network.listen('GameEvent', 'created', () => this.restart())
+        //Network.listen('GameEvent', 'result', (event) => this.finishGame(event.message))
+        Network.listen('GameEvent', 'updated', (event) => {
+            if(event.game.result !== null) this.finishGame(event.game.result)
+        })
         Network.listen(null, 'userColor', (event) => this.setColor(event.message))
 
         this.spriteSheet = await new Promise((resolve, reject) => {

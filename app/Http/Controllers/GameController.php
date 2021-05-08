@@ -37,8 +37,13 @@ class GameController extends Controller
     public function timeOver(Request $request, Game $game, string $color)
     {
         $result = $game->timeCheck( $game->colorToUser($color) );
-        if($result) GameEvent::dispatch($game, 'result', $color === 'w' ? 'b' : 'w');
+        //if($result) GameEvent::dispatch($game, 'result', $color === 'w' ? 'b' : 'w');
 
-        return $result;
+        return response($result);
+    }
+
+    public function victory(Request $request, Game $game, string $color)
+    {
+        return $game->victoryReport($request->user(), $color) ? response(true) : abort(409);
     }
 }

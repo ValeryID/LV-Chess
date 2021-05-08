@@ -37,4 +37,5 @@ Route::middleware('auth')->group(function() {
     Route::post('/game/{game}/surrender', [GameController::class, 'surrender']);
     Route::get('/game/{game}/getcolor', [GameController::class, 'getColor']);
     Route::get('/game/{game}/timeover/{color}', [GameController::class, 'timeOver'])->where('color', '[wb]');
+    Route::get('/game/{game}/victory/{color}', [GameController::class, 'victory'])->where('color', '[wb]');
 });

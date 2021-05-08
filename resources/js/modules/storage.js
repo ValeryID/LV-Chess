@@ -13,8 +13,8 @@ let Store = Vuex.createStore({
 
 const State = Store.state
 
-Store.findLobbyById = (id) => {
-    return State.lobbies.find((lobby) => lobby.id === id)
+Store.findLobbyById = (id, status=null) => {
+    return State.lobbies.find((lobby) => lobby.id === id && (!status || lobby.status===status))
 }
 
 Store.openLobbies = (id) => State.lobbies.filter(lobby => lobby.status === 'open')

@@ -40,7 +40,7 @@ class Lobby extends Model implements CardableInterface
         }
     }
 
-    public function disconnectUser(User $user): bool
+    public function leave(User $user): bool
     {
         switch($user->id) {
             default: return false;
@@ -62,6 +62,8 @@ class Lobby extends Model implements CardableInterface
     {
         if(in_array($user->id, [$this->host_id, $this->guest_id])) return true;
         if($this->guest_id !== null) return false;
+        $user->leaveLobbies();
+
         return $this->setGuestUser($user);
     }
 

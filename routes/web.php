@@ -31,7 +31,7 @@ Route::middleware('auth')->group(function() {
     Route::post('/lobby/{lobby}/join', [LobbyController::class, 'joinLobby']);
     Route::post('/lobby/{lobby}/start', [LobbyController::class, 'startLobby']);
     Route::post('/lobby/{lobby}/chat', [LobbyController::class, 'sendChatMessage']);
-    Route::post('/lobby/leave', [LobbyController::class, 'leaveLobby']);
+    Route::post('/lobby/leave', [LobbyController::class, 'leaveLobbies']);
 
     Route::post('/game/{game}/move', [GameController::class, 'move']);
     Route::post('/game/{game}/surrender', [GameController::class, 'surrender']);

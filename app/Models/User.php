@@ -57,4 +57,12 @@ class User extends Authenticatable implements CardableInterface
     {
         return Lobby::where('host_id', $this->id)->orWhere('guest_id', $this->id)->get();
     }
+
+    public function leaveLobbies(): int
+    {
+        $lobbies = $this->lobbies();
+        $lobbies->each(fn ($lobby) => $lobby->leave($this));
+
+        return $lobbies->count();
+    }
 }

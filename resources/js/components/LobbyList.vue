@@ -30,7 +30,7 @@ export default {
                 if(lobby.status === 'open' &&
                 !Network.lobbyId && 
                 Network.user && 
-                Network.user.id === lobby.host.id) 
+                [lobby.host.id, lobby.guest?lobby.guest.id:{}].includes(Network.user.id)) 
                     this.join(lobby.id);
             }
             
@@ -52,12 +52,7 @@ export default {
         Network.listen('LobbyEvent', 'updated', (event) => {
             Store.state.lobbies = Store.state.lobbies.map(
                 lobby => lobby.id === event.lobby.id ? event.lobby : lobby)
-            // if(['started', 'closed'].includes(event.lobby.status))
-            //     Store.state.lobbies = Store.state.lobbies.filter((lobby) => lobby.id !== event.lobby.id)
         })
-        // Network.listen('LobbyEvent', 'started', (event) => {
-        //     Store.state.lobbies = Store.state.lobbies.filter((lobby) => lobby.id !== event.lobby.id)
-        // })
     }
 }
 </script>

@@ -23,16 +23,14 @@ class LobbyController extends Controller
         return $lobby->join($request->user()) ? response($lobby) : abort(403);
     }
 
-    public function leaveLobby(Request $request)
+    public function leaveLobbies(Request $request)
     {
-        $userLobbies = $request->user()->lobbies();
+        $lobbiesCount = $request->user()->leaveLobbies();
 
-        if($userLobbies->count() === 0) abort(409);
-
-        $userLobbies->each(fn ($lobby) => $lobby->disconnectUser($request->user()));
+        if($lobbiesCount === 0) abort(409);
 
         return response()->json([
-            'count' => $userLobbies->count()
+            'count' => $lobbiesCount
         ]);
     }
 

@@ -39,7 +39,7 @@ export default {
     },
     computed: {
         lobby() {
-            const lobby = Store.findLobbyById(this.lobbyId)
+            const lobby = Store.findLobbyById(this.lobbyId, 'open')
 
             if(lobby) {
                 this.hostColor = lobby.host_color

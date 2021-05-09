@@ -25,6 +25,13 @@ class AuthController extends Controller//$request->user()
         return response(['reason' => $user ? 'password' : 'email'], 403);
     }
     
+    public function discard()
+    {
+        Auth::logout();
+        
+        return response('success');
+    }
+
     public function test(Request $request)
     {
         //dd($request->session()->all());

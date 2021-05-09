@@ -18,18 +18,16 @@ button {
 	cursor: pointer;
 	border-radius: 6px;
 	padding: 5px;
-	float: right;
 	position: relative;
-	
-
-	$col: $button-color-default;
-	background-color: $col;
+	flex-shrink: 0;
+	margin-left: 3px;
+	margin-right: 3px;
 	
 	border: $button-border;
 	top: -$button-z-height;
 	box-shadow: 0px $button-z-height  2px 0 rgb(0, 0, 0);
 	@include button-background($button-color-default);
-	transition: all .16s;
+	//transition: all .16s;
 
 	&:hover {
   		$col: $button-color-hover;
@@ -49,7 +47,7 @@ button {
 		top: 0px;
 		cursor: default;
 		box-shadow: 0px 0px 6px 0px rgb(0, 0, 0) inset;
-		background-color: $button-color-disabled;
+		@include button-background($button-color-disabled);
 	}
 }
 
@@ -139,52 +137,65 @@ textarea {
 }
 
 .login-form {
-	@include light-dark-div(121px);
-
-	button {
-		margin-top: 18px;
-		margin-left: 15px;
-	}
+	@include light-dark-div(127px, 265px);
 	
 	input {
 		@include standart-input();
+		margin-top: 5px;
 	}
-}
 
-.dot {
-	float: left;
-	height: 25px;
-	width: 25px;
-	margin-top: 26px;
-	background-color: #bbb;
-	border-radius: 50%;
-	box-shadow: 0 0 0 2pt rgb(0, 0, 0);
-	display: block;
-}
+	.dot {
+		position: absolute;
+		bottom: 5px;
+		left: 7px;
+		height: 25px;
+		width: 25px;
+		background-color: #bbb;
+		border-radius: 50%;
+		box-shadow: 0 0 0 2pt rgb(0, 0, 0);
+		display: block;
+	}
 
-.dot-active {
-	background-color: rgb(139, 223, 61);
+	.dot-active {
+		background-color: rgb(139, 223, 61);
+	}
 }
 
 .lobby-form {
-	@include light-dark-div(312px, 297px);
+	@include light-dark-div(291px, 297px, 52px);
 
-	button {
-		margin-top: 31px;
-		margin-left: 0px;
-		margin-right: 5px;
+	.light-div {
+		padding-top: 0px;
 	}
 
-	label {
-		display: block;
+	.light-div > div {
 		position: relative;
-		margin-top: 3px;
-		z-index: 100;
-	}
+		width: 100%;
+		padding: 1px;
+		margin-top: 7px;
+		outline: rgb(0, 0, 0) solid 1px;
+		background-color: rgba(0, 0, 0, 0.068);
 
-	select, input {
-		@include standart-input();
-		margin-top: 0px;
+		label {
+			display: inline;
+			line-height: 1.5;
+			font-weight: bold;
+			vertical-align: middle;
+			margin-left: 3px;
+		}
+
+		span {
+			display: block;
+			float: right;
+			width: 180px;
+		}
+
+		select, input {
+			@include standart-input();
+			display: block;
+			float: right;
+			width: 180px;
+		}
 	}
 }
 

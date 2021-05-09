@@ -1,24 +1,36 @@
 <template>
     <div class='lobby-form'>
-        <div class='light-div'></div>
-        <label><b>Lobby: {{lobby ? lobby.id : '...'}}<br></b></label>
-        <label><b>Host: {{lobby ? lobby.host.name : '...'}}<br></b></label>
-        <label><b>Guest: {{lobby&&lobby.guest ? lobby.guest.name : '...'}}</b></label>
-        <label><b>Host color: </b></label>
-        <select v-model='hostColor' :disabled='!configEnabled()'>
-            <option value='w'>white</option>
-            <option value='b'>black</option>
-        </select>
-        <label><b>Public: </b></label>
-        <select v-model='public' :disabled='!configEnabled()'>
-            <option value='true'>true</option>
-            <!--<option value='false'>false</option>-->
-        </select>
-        <label><b>Time limit: </b></label>
-        <input placeholder='Time limit' v-model='timeLimit' type='number' :disabled='!configEnabled()'/>
-        <button @click='create' :disabled='isHost() && isLobbyOpen()'>Create</button>
-        <button @click='start' :disabled='!isLobbyOpen() || !isHost() || !lobby.guest'>Start</button>
-        <button @click='leave' :disabled='!isLobbyOpen()'>Leave</button>
+        <div class='light-div'>
+            <div><label><i>Lobby</i> <span>{{lobby ? lobby.id : '...'}}</span></label></div>
+            <div><label><i>Host</i> <span>{{lobby ? lobby.host.name : '...'}}</span></label></div>
+            <div><label><i>Guest</i> <span>{{lobby&&lobby.guest ? lobby.guest.name : '...'}}</span></label></div>
+            <div>
+                <label><i>Host color</i> </label>
+                <select v-model='hostColor' :disabled='!configEnabled()'>
+                    <option value='w'>white</option>
+                    <option value='b'>black</option>
+                </select>
+                <div style="clear: both"/>
+            </div>
+            <div>
+                <label><i>Public</i> </label>
+                <select v-model='public' :disabled='!configEnabled()'>
+                    <option value='true'>true</option>
+                    <!--<option value='false'>false</option>-->
+                </select>
+                <div style="clear: both"/>
+            </div>
+            <div>
+                <label><i>Time limit</i> </label>
+                <input placeholder='Time limit' v-model='timeLimit' type='number' :disabled='!configEnabled()'/>
+                <div style="clear: both"/>
+            </div>
+        </div>
+        <div class='controls-div'>
+            <button @click='leave' :disabled='!isLobbyOpen()'>Leave</button>
+            <button @click='start' :disabled='!isLobbyOpen() || !isHost() || !lobby.guest'>Start</button>
+            <button @click='create' :disabled='isHost() && isLobbyOpen()'>Create</button>
+        </div>
     </div>
 </template>
 
@@ -38,6 +50,8 @@ export default {
     },
     computed: {
         lobby() {
+            [Store.state.user, ]
+
             const lobby = Store.lobby()//Store.findLobbyById(Store.state.lobbyId, 'open')
             console.log(lobby)
 

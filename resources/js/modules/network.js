@@ -39,6 +39,12 @@ export default {
     //     return this._lobbyId
     // },
 
+    reset() {
+        this.echo.leave(`lobby.${Store.state.lobbyId}`)
+        this.echo.leave(`lobby.${Store.state.gameId}`)
+        Store.discardUser()
+    },
+
     syncUser() {
         this.getUser().then(user => Store.state.user = user, err => Store.state.user = null)
     },
@@ -69,7 +75,7 @@ export default {
     },
 
     dispatch(event) {
-        for(let listener of this.listeners)
+        for(const listener of this.listeners)
             if(listener.type === event.type && listener.class === event.class)
                 listener.callback(event)
     },
@@ -110,7 +116,7 @@ export default {
     },
 
     getColor() {
-        let promise = this.get(`/game/${Store.state.gameId}/getcolor`)
+        const promise = this.get(`/game/${Store.state.gameId}/getcolor`)
         promise.then((response)=>this.dispatch({
             class: null,
             type: 'userColor',
@@ -125,8 +131,16 @@ export default {
         .then(resp => Store.state.user = resp.data, err => new Promise((res, rej) => rej(err)))
     },
 
+    logout() {
+        const promise = this.post('/logout')
+
+        promise.then(resp => this.reset())
+
+        return promise
+    },
+
     joinLobby(lobbyId) {
-        let promise = this.post(`/lobby/${lobbyId}/join`)
+        const promise = this.post(`/lobby/${lobbyId}/join`)
         promise.then((response) => {
             this.listenLobbyChannel(response.data.id)
         })
@@ -135,7 +149,7 @@ export default {
     },
 
     makeLobby(hostColor, isPublic, timeLimit) {
-        let promise = this.post('/lobby/make', {
+        const promise = this.post('/lobby/make', {
             hostColor: hostColor, 
             public: isPublic, 
             timeLimit: timeLimit
@@ -161,12 +175,12 @@ export default {
     },
 
     sendTimeOver(color) {
-        return this.get(`/game/${Store.state.gameId}/timeover/${color}`)
+        return this.post(`/game/${Store.state.gameId}/timeover/${color}`)
             .then(data=>console.log(data))
     },
 
     sendVictory(color) {
-        return this.get(`/game/${Store.state.gameId}/victory/${color}`)
+        return this.post(`/game/${Store.state.gameId}/victory/${color}`)
             .then(data=>console.log(data))
     },
 

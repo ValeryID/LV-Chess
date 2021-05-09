@@ -1,10 +1,14 @@
 <template>
     <div class='login-form'>
-        <div class='light-div'></div>
-        <input placeholder='email' v-model='email' type='email'/>
-        <input placeholder='password' v-model='password' type='password'/>
-        <span :class="[{'dot-active': user}, 'dot']"></span>
-        <button @click='login'>Login</button>
+        <div class='light-div'>
+            <input placeholder='email' v-model='email' type='email'/>
+            <input placeholder='password' v-model='password' type='password'/>
+        </div>
+        <div class='controls-div'>
+            <span :class="[{'dot-active': user}, 'dot']"></span>
+            <button @click='logout'>Logout</button>
+            <button @click='login'>Login</button>
+        </div>
     </div>
 </template>
 
@@ -29,6 +33,9 @@ export default {
     methods: {
         login() {
             Network.login(this.email, this.password)
+        },
+        logout() {
+            Network.logout()
         }
     },
     // created() {

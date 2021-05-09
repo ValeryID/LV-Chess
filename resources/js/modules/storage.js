@@ -25,4 +25,10 @@ Store.lobby = () => Store.findLobbyById(State.lobbyId, ['open', 'started'])
 
 Store.openLobbies = (id) => State.lobbies.filter(lobby => lobby.status === 'open')
 
+Store.discardUser = () => {
+    State.user = null
+    State.lobbyId = null
+    State.gameId = null
+}
+
 export default Store

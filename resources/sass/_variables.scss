@@ -19,26 +19,28 @@ $button-color-disabled: #bbabab;
     font: 20px sans-serif;
 }
 
-@mixin light-div($height, $width) {
+@mixin app-layout {
+	display: flex;
+	align-content: center;
+	flex-wrap: nowrap;
+	flex-direction: row;
+}
+
+@mixin light-div($height, $width:auto) {
     $col: $form-background-light;
     background-color: $col;
     border: 3px solid $col;
     box-shadow: 0px 0px 6px 0px rgb(68, 68, 68);
-    z-index: 1;
-    position: absolute;
     border-radius: 16px;
     //border-bottom-left-radius: 0;
     //border-bottom-right-radius: 0;
     width: $width;
     height: $height;
     padding: 5px 10px 10px 10px;
-    top: -3px;
-    left: -3px;
 }
 
-@mixin form-div($height, $width) {
+@mixin form-div($height:auto, $width:auto) {
     @include clean-font();
-    flex-shrink: 0;
     $col: $form-background-dark;
     background-color: $col;
     border: 3px solid $col;
@@ -47,35 +49,31 @@ $button-color-disabled: #bbabab;
     display: block;
     width: $width;
     height: $height;
-    padding: 3px 10px 10px 10px;
+    padding: 3px 3px 3px 3px;
     position: relative;
     overflow: clip;
 }
 
-@mixin light-dark-div($height, $width:230px, $dark-div-height:55px) {
+@mixin light-dark-div($height:auto, $width:auto, $dark-div-height:55px) {
     @include form-div($height, $width);
     
     .light-div {
-        @include light-div($height - $dark-div-height, $width);
+        @include light-div($height - $dark-div-height);
     }
 
     .controls-div {
-        width: 100%;
-
         display: flex;
         flex-direction: row;
         justify-content: flex-end;
 
-        position: absolute;
-        bottom: 5px;
-        left: 0px;
+        margin-top: 15px;
+        margin-bottom: 5px;
     }
 }
 
 @mixin standart-input() {
     @include clean-font();
     position: relative;
-    z-index: 100;
     background-color: #f4ffeb;
     outline: 1px solid black;
     box-shadow: 0px 0px 4px 0px rgb(68, 68, 68);

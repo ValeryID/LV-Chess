@@ -1,9 +1,18 @@
 <template>
     <div class='lobby-form'>
-        <div class='light-div'>
-            <div><label><i>Lobby</i> <span>{{lobby ? lobby.id : '...'}}</span></label></div>
-            <div><label><i>Host</i> <span>{{lobby ? lobby.host.name : '...'}}</span></label></div>
-            <div><label><i>Guest</i> <span>{{lobby&&lobby.guest ? lobby.guest.name : '...'}}</span></label></div>
+        <div v-if='lobby' class='light-div'>
+            <div>
+                <label><i>Lobby</i> <span>{{lobby ? lobby.id : '...'}}</span></label>
+                <div style="clear: both"/>
+            </div>
+            <div>
+                <label><i>Host</i> <span>{{lobby ? lobby.host.name : '...'}}</span></label>
+                <div style="clear: both"/>
+            </div>
+            <div>
+                <label><i>Guest</i> <span>{{lobby&&lobby.guest ? lobby.guest.name : '...'}}</span></label>
+                <div style="clear: both"/>
+            </div>
             <div>
                 <label><i>Host color</i> </label>
                 <select v-model='hostColor' :disabled='!configEnabled()'>
@@ -52,8 +61,7 @@ export default {
         lobby() {
             [Store.state.user, ]
 
-            const lobby = Store.lobby()//Store.findLobbyById(Store.state.lobbyId, 'open')
-            console.log(lobby)
+            const lobby = Store.lobby()
 
             if(lobby) {
                 this.hostColor = lobby.host_color

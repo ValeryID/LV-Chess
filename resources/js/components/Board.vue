@@ -1,7 +1,7 @@
 <template>
     <div class='board'>
         <div class='canvas-div'>
-            <div v-if='!started' :style="{width: width + 'px', height: height + 'px'}">
+            <div v-if='!started'>
                 <label v-if='result'><b>{{result}} player wins</b></label>
             </div>
             <div class='shadow' :style="{width: width + 'px', height: height + 'px'}"></div>
@@ -12,7 +12,7 @@
     </div>
 </template>
 
-<script>
+<script>// <div v-if='!started' :style="{width: width + 'px', height: height + 'px'}">
 import Network from '../modules/network';
 import Renderer from '../modules/renderer';
 import Store from '../modules/storage';

@@ -14,12 +14,17 @@
     <body>
 
         <div id="app">
-            <div class='layout'>
-                <board></board>
-                <login></login>
-                <lobby></lobby>
-                <lobbylist></lobbylist>
-                <chat></chat>
+            <div class='app-layout-container'>
+                <div class='app-layout-horizontal'>
+                    <lobbylist>
+                        <lobby></lobby>
+                    </lobbylist>
+                    <board></board>
+                    <div class='app-layout-vertical'>
+                        <login></login>
+                        <chat></chat>
+                    </div>
+                </div>
             </div>
         </div>
         

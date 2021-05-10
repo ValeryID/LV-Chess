@@ -4,7 +4,8 @@
             <div v-if='openLobbies().length > 0'>
                 <template v-for='lobby in lobbies'>
                     <button v-if="lobby.status === 'open'" @click='join(lobby.id)' class='lobby-list-item'>
-                        {{`${lobby.id}. ${1 + (lobby.guest !== null)}/2`}}<br>
+                        {{`${lobby.id}. (${1 + (lobby.guest !== null)}/2)`}}<br>
+                        {{`Host: ${lobby.host.name}`}}<br>
                         {{`Host color: "${lobby.host_color}"`}}<br>
                         {{`Time limit: ${lobby.time_limit}`}}
                     </button>
@@ -12,7 +13,7 @@
             </div>
             <b v-else>No lobbies found</b>
         </div>
-        
+        <slot></slot>
     </div>
 </template>
 

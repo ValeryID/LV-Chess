@@ -36,7 +36,8 @@ export default {
     methods: {
         calcCanvasWidth() {
             const box = document.querySelector('.board').getBoundingClientRect()
-            this.canvasWidth = Math.min(box.width-10, box.height-10)
+            this.canvasWidth = Math.min(box.width-14, box.height-14)
+            Renderer.resetScale()
         },
 
         init() {
@@ -171,7 +172,9 @@ export default {
         },
     },
     async mounted() {
-        setTimeout(()=>this.calcCanvasWidth(), 2000)
+        clearInterval(this.interval)
+        this.interval = setInterval(()=>this.calcCanvasWidth(), 500)
+        
         window.addEventListener('resize', (e)=>this.calcCanvasWidth())
 
         this.canvas = document.querySelector('#board-canvas')

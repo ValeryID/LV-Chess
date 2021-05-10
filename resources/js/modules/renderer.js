@@ -4,15 +4,23 @@ export default {
         this.spriteSheet = spriteSheet
         this.ctx = this.canvas.getContext('2d')
 
-        this.scale = canvas.width / 800;
-        this.spriteWidth = 100
-        this.width = this.height = this.spriteWidth * this.scale * 8
-        this.pieceSize = this.spriteWidth * this.scale;
-
         this.board = this.cursor = this.moveStart = this.moveEnd = null;
 
-        clearInterval(this.interval)
-        this.interval = setInterval(()=>this.render(), 500)
+        this.resetScale()
+    },
+
+
+    resetScale() {
+        this.scale = this.canvas.width / 800;
+        
+        this.spriteWidth = 100
+        this.width = this.height = this.spriteWidth * this.scale * 8
+        this.pieceSize = this.spriteWidth * this.scale
+
+        if(this.prevScale !== this.scale) {
+            this.prevScale = this.scale
+            this.render()
+        }
     },
 
     clear() {

@@ -1,6 +1,6 @@
 <template>
     <div class='lobby-form'>
-        <div v-if='lobby' class='light-div'>
+        <div v-if='lobbyPopup' class='light-div'>
             <div>
                 <label><i>Lobby</i> <span>{{lobby ? lobby.id : '...'}}</span></label>
                 <div style="clear: both"/>
@@ -36,9 +36,11 @@
             </div>
         </div>
         <div class='controls-div'>
-            <button @click='leave' :disabled='!isLobbyOpen()'>Leave</button>
-            <button @click='start' :disabled='!isLobbyOpen() || !isHost() || !lobby.guest'>Start</button>
-            <button @click='create' :disabled='isHost() && isLobbyOpen()'>Create</button>
+            <button @click='lobbyPopup = !lobbyPopup'>{{lobbyPopup?'Hide':'Show'}}</button>
+            <button @click='leave' :disabled='!lobby'>Leave</button>
+            <button @click='lobby ? start() : create()' :disabled='lobby && !canStart() || !lobby && !canCreate()'>
+                {{lobby?'Start':'Create'}}
+            </button>
         </div>
     </div>
 </template>
@@ -55,6 +57,7 @@ export default {
             hostColor: 'w',
             public: 'true',
             timeLimit: 900,
+            lobbyPopup: true
         }
     },
     computed: {
@@ -93,6 +96,12 @@ export default {
         },
         isLobbyOpen() {
             return this.lobby && this.lobby.status === 'open'
+        },
+        canCreate() {
+            return !this.isHost() || !this.isLobbyOpen()
+        },
+        canStart() {
+            return this.isLobbyOpen() && this.isHost() && this.lobby.guest
         }
     },
     // created() {

@@ -10,6 +10,9 @@ export default {
         this.pieceSize = this.spriteWidth * this.scale;
 
         this.board = this.cursor = this.moveStart = this.moveEnd = null;
+
+        clearInterval(this.interval)
+        this.interval = setInterval(()=>this.render(), 500)
     },
 
     clear() {

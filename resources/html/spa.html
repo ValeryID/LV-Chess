@@ -14,16 +14,19 @@
     <body>
 
         <div id="app">
-            <div class='app-layout-container'>
-                <div class='app-layout-horizontal'>
-                    <lobbylist>
-                        <lobby></lobby>
-                    </lobbylist>
-                    <board></board>
-                    <div class='app-layout-vertical'>
+            <div :class="[widescreen?'app-layout-container':'app-layout-container-small']">
+                <div :class="[widescreen?'app-layout-horizontal':'app-layout-vertical']">
+                    <lobbylist v-show="widescreen||screen=='Lobbies'"><lobby></lobby></lobbylist>
+                    <board v-show="widescreen||screen=='Board'"></board>
+                    <div v-show="widescreen||screen=='Login&Chat'" class='app-layout-vertical'>
                         <login></login>
                         <chat></chat>
                     </div>
+                </div>
+                <div v-show='!widescreen' class='app-layout-controls'>
+                    <button @click='screen="Board"' :disabled='screen=="Board"'>Board</button>
+                    <button @click='screen="Lobbies"' :disabled='screen=="Lobbies"'>Lobbies</button>
+                    <button @click='screen="Login&Chat"' :disabled='screen=="Login&Chat"'>Login&Chat</button>
                 </div>
             </div>
         </div>

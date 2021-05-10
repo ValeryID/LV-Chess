@@ -1,18 +1,20 @@
 <template>
     <div class='board'>
-        <div class='canvas-div'>
-            <div v-if='!started'>
+        <div class='canvas-div' :style="{width: canvasWidth + 'px', height: canvasWidth + 'px'}">
+            <div class='alert' v-if='!started'>
                 <label v-if='result'><b>{{result}} player wins</b></label>
             </div>
-            <div class='shadow' :style="{width: width + 'px', height: height + 'px'}"></div>
-            <canvas @click='onClick' id='board-canvas' :width='width' :height='width'/>
+            <div class='shadow'></div>
+            <canvas @click='onClick' id='board-canvas' :width='canvasWidth' :height='canvasWidth'/>
         </div>
         <div style='color: white'>{{Math.max(whitePlayerTime, 0)}}</div>
         <div style='color: white'>{{Math.max(blackPlayerTime, 0)}}</div>
     </div>
 </template>
 
-<script>// <div v-if='!started' :style="{width: width + 'px', height: height + 'px'}">
+<script>
+// <div v-if='!started' :style="{width: width + 'px', height: height + 'px'}">
+// <div class='shadow' :style="{width: width + 'px', height: height + 'px'}"></div>
 import Network from '../modules/network';
 import Renderer from '../modules/renderer';
 import Store from '../modules/storage';
@@ -23,8 +25,7 @@ export default {
     emits: [],
     data() {
         return {
-            width: '600',
-            height: '600',
+            canvasWidth: null,
             spriteSheet: new Image(),
             whitePlayerTime: null,
             blackPlayerTime: null,
@@ -33,6 +34,11 @@ export default {
         }
     },
     methods: {
+        calcCanvasWidth() {
+            const box = document.querySelector('.board').getBoundingClientRect()
+            this.canvasWidth = Math.min(box.width-10, box.height-10)
+        },
+
         init() {
             setInterval(() => {
                 if(!this.started) return
@@ -140,8 +146,10 @@ export default {
         },
 
         onClick(e) {
-            let boardPos = Renderer.getCeil(e.offsetX, e.offsetY);
-            console.log(this.arrayToAlgebraic(boardPos), this.getPiece(boardPos), this.ceilSelected)
+            const boundingBox = this.canvas.getBoundingClientRect()
+            const boardPos = Renderer.getCeil(
+                e.offsetX / boundingBox.width * this.canvas.width, 
+                e.offsetY / boundingBox.height * this.canvas.height)
 
             if(this.ceilSelected) {
                 let algebraicStart = this.arrayToAlgebraic(this.ceilSelected)
@@ -160,9 +168,12 @@ export default {
                     Renderer.setCursor(this.ceilSelected)
                 }
             }
-        }
+        },
     },
     async mounted() {
+        setTimeout(()=>this.calcCanvasWidth(), 2000)
+        window.addEventListener('resize', (e)=>this.calcCanvasWidth())
+
         this.canvas = document.querySelector('#board-canvas')
         Renderer.init(this.canvas, this.spriteSheet)
         this.engine = new Chess()

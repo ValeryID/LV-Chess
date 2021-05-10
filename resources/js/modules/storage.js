@@ -3,10 +3,11 @@ import Vuex from 'vuex'
 let Store = Vuex.createStore({
     state () {
         return {
-          lobbies: [],
-          lobbyId: null,
-          gameId: null,
-          user: null
+            widescreen: true,
+            lobbies: [],
+            lobbyId: null,
+            gameId: null,
+            user: null
         }
     },
     mutations: {

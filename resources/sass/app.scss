@@ -64,10 +64,6 @@ button {
 	}
 }
 
-textarea {
-	resize: none;
-}
-
 .app-layout-container {
 	@include app-layout();
 	justify-content: center;
@@ -96,6 +92,10 @@ textarea {
 	
 		width: 25%;
 		//max-width: 600px;
+	}
+
+	.lobby-list {
+		width: 20%
 	}
 }
 
@@ -186,7 +186,7 @@ textarea {
 }
 
 .lobby-list {
-	@include form-div();
+	@include form-div(auto);
 
 	display: flex;
 	flex-direction: column;
@@ -312,6 +312,8 @@ textarea {
 	justify-content: center;
 	flex-shrink: 1;
 	flex-grow: 1;
+
+	box-sizing: border-box;
 	width: 45%;
 
 	.canvas-div {

@@ -26,7 +26,7 @@ $button-color-disabled: #bbabab;
 	flex-direction: row;
 }
 
-@mixin light-div($height, $width:auto) {
+@mixin light-div($height, $width:100%) {
     $col: $form-background-light;
     background-color: $col;
     border: 3px solid $col;
@@ -34,6 +34,7 @@ $button-color-disabled: #bbabab;
     border-radius: 16px;
     //border-bottom-left-radius: 0;
     //border-bottom-right-radius: 0;
+    box-sizing: border-box;
     width: $width;
     height: $height;
     padding: 5px 10px 10px 10px;

@@ -66,6 +66,9 @@ $button-color-disabled: #bbabab;
         display: flex;
         flex-direction: row;
         justify-content: flex-end;
+        flex-wrap: wrap;
+
+        height: auto;
         padding: 5px;
     }
 }

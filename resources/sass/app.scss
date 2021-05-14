@@ -130,11 +130,19 @@ button {
 		align-items: center;
 		flex-shrink: 0;
 		flex-grow: 0;
+		flex-wrap: wrap;
+
 		padding: 1px;
-		height: 45px;
+		height: auto;
 		
 		background-color: black;
 		align-items: stretch;
+
+		button {
+			width: auto;
+			flex-shrink: 1;
+			flex-grow: 1;
+		}
 	}
 
 	.board {
@@ -169,18 +177,28 @@ button {
 	.controls-div {
 		display: flex;
 		flex-direction: row;
-		width: 100%;
-		justify-content: flex-start;
+		justify-content: flex-end;
 		align-items: center;
-		height: 40px;
+		width: auto;
+		padding: 0px;
+
+		flex-shrink: 1;
+		box-sizing: border-box;
+		height: auto;
 		margin-top: 5px;
+
 		input {
 			@include standart-input();
 			margin-top: 0;
+			min-width: 5px;
+			width: auto;
+			flex-grow: 1;
 		}
 		button {
+			width:auto;
+			flex-grow: 0;
 			margin-left: 10px;
-			margin-top: 0;
+			margin-top: 0px;
 		}
 	}
 }
@@ -282,9 +300,14 @@ button {
 	}
 
 	.dot {
-		position: absolute;
-		bottom: 13px;
-		left: 10px;
+		display: block;
+		position: relative;
+		top: 12px;
+		left: 0px;
+		margin-left: 10px;
+		margin-right: auto;
+		margin-bottom: 12px;
+  		//order: 2;
 		height: 25px;
 		width: 25px;
 		background-color: #bbb;

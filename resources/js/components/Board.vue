@@ -1,14 +1,18 @@
 <template>
-    <div class='board'>
-        <div class='canvas-div' :style="{width: canvasWidth + 'px', height: canvasWidth + 'px'}">
-            <div class='alert' v-if='!started'>
-                <label v-if='result'><b>{{result}} player wins</b></label>
+    <div class='board-container'>
+        <div class='board'>
+            <div class='canvas-div' :style="{width: canvasWidth + 'px', height: canvasWidth + 'px'}">
+                <div class='alert' v-if='!started'>
+                    <label v-if='result'><b>{{result}} player wins</b></label>
+                </div>
+                <div class='shadow'></div>
+                <canvas @click='onClick' id='board-canvas' :width='canvasWidth' :height='canvasWidth'/>
             </div>
-            <div class='shadow'></div>
-            <canvas @click='onClick' id='board-canvas' :width='canvasWidth' :height='canvasWidth'/>
         </div>
-        <div style='color: white'>{{Math.max(whitePlayerTime, 0)}}</div>
-        <div style='color: white'>{{Math.max(blackPlayerTime, 0)}}</div>
+        <div class='gameinfo'>
+            <div style='color: white'>Black time: {{Math.max(blackPlayerTime, 0)}}</div>
+            <div style='color: white'>White time: {{Math.max(whitePlayerTime, 0)}}</div>
+        </div>
     </div>
 </template>
 
@@ -36,7 +40,7 @@ export default {
     methods: {
         calcCanvasWidth() {
             const box = document.querySelector('.board').getBoundingClientRect()
-            this.canvasWidth = Math.min(box.width-14, box.height-14)
+            this.canvasWidth = ~~Math.min(box.width-14, box.height-14)
             Renderer.resetScale()
         },
 

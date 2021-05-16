@@ -100,7 +100,7 @@ export default {
             case 'promotion': this.ctx.strokeStyle = '#8616ab'; break;
         }
 
-        this.ctx.lineWidth = 5;
+        this.ctx.lineWidth = 5 * this.scale;
 
         this.ctx.beginPath()
         this.ctx.moveTo(

@@ -96,6 +96,16 @@ class Game extends Model implements CardableInterface
         return $this->countPlayerElapsedTime($user) > $this->lobby()->time_limit;
     }
 
+    public function getCurrentState(): array
+    {
+        return [
+            'id' => $this->id,
+            'moves' => $this->moves,
+            'white_time' => $this->lobby()->time_limit - $this->countPlayerElapsedTime($this->colorToUser('w')),
+            'black_time' => $this->lobby()->time_limit - $this->countPlayerElapsedTime($this->colorToUser('b')),
+        ];
+    }
+
     public function timeCheck(User $user): bool
     {
         if($this->isPlayerTimeOver($user)) {

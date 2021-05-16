@@ -134,4 +134,14 @@ class Lobby extends Model implements CardableInterface
             
         return $card;
     }
+
+    public function game()
+    {
+        return $this->hasOne(Game::class);
+    }
+
+    public function resume(): ?array
+    {
+        return $this->game ? $this->game->getCurrentState() : null;
+    }
 }

@@ -5,11 +5,21 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Gate;
 use App\Models\Lobby;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use App\Events\LobbyEvent;
 
 class LobbyController extends Controller
 {
+    public function resumeLobby(Request $request, Lobby $lobby)
+    {
+        $gameState = $lobby->resume();
+
+        if(!$gameState) abort(404);
+
+        return response()->json($gameState);
+    }
+
     public function makeLobby(Request $request)
     {
         $params = $request->only('public', 'hostColor', 'timeLimit');
@@ -47,7 +57,33 @@ class LobbyController extends Controller
 
     public function list(Request $request)
     {
-        $collection = Lobby::where('public', 'true')->where('status', 'open')->get();
+        // DB::enableQueryLog();
+        // $collection = Lobby::where('public', 'true')
+        // ->where(fn($query) => 
+        //     $query->where('status', 'open')
+        //     ->orWhere(fn($query) => 
+        //         $query->where('status', 'started')
+        //         ->whereNull(fn($query) => 
+        //             $query->select('result')
+        //             ->from('games')
+        //             ->whereColumn('games.lobby_id', 'lobbies.id')
+        //             )
+        //         )
+        // )
+        // ->get();
+        // dd(DB::getQueryLog(), $collection);
+
+        //DB::enableQueryLog();
+        $collection = Lobby::fromQuery('select lobbies.*
+        from lobbies 
+        left join games on games.lobby_id = lobbies.id
+        where lobbies.public = "true" and 
+        (lobbies.status = "open" or (lobbies.status = "started" and games.result is NULL))'
+        );
+        //dd(DB::getQueryLog(), $collection);
+
+        //dd($collection);
+        //$collection->map(fn ($item) => $item->getCard())
         return $collection->map(fn ($item) => $item->getCard());
     }
 

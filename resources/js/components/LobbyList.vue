@@ -30,27 +30,30 @@ export default {
     },
     computed: {
         lobbies() {
-            for(let lobby of Store.state.lobbies) {
-                if(lobby.status === 'open' &&
-                !Store.state.lobbyId && 
-                Store.state.user && 
-                [lobby.host.id, lobby.guest?lobby.guest.id:{}].includes(Store.state.user.id)) 
-                    this.join(lobby.id);
-            }
+            console.log('lobbies')
             
             return Store.state.lobbies
         },
     },
     methods: {
-        join(lobbyId) {
-            Network.joinLobby(lobbyId)
+        join(lobbyId, resume=false) {
+            console.log('join', lobbyId, resume)
+            Network.joinLobby(lobbyId, resume)
         },
         openLobbies() {
             return Store.openLobbies()
         }
     },
     created() {
-        Network.getLobbies().then(lobbies => Store.state.lobbies = lobbies)
+        Network.getLobbies().then(lobbies => Store.state.lobbies = lobbies).then(()=>{
+            for(let lobby of Store.state.lobbies) {
+                if(lobby.status !== 'closed' &&
+                !Store.state.lobbyId && 
+                Store.state.user && 
+                [lobby.host.id, lobby.guest?lobby.guest.id:{}].includes(Store.state.user.id)) 
+                    this.join(lobby.id, true);
+            }
+        })
         
         Network.listen('LobbyEvent', 'created', (event) => Store.state.lobbies.push(event.lobby))
         Network.listen('LobbyEvent', 'updated', (event) => {

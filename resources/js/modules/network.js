@@ -13,32 +13,6 @@ export default {
         this.echo.channel(`lobbies`).listen('LobbyEvent', (e)=>this.onLobbyEvent(e))
     },
 
-    // set user(a) {
-    //     this._user = a
-    //     this.dispatch({
-    //         class: null,
-    //         type: 'userChanged',
-    //         message: this._user
-    //     })
-    // },
-
-    // get user() {
-    //     return this._user
-    // },
-
-    // set lobbyId(a) {
-    //     this._lobbyId = a
-    //     this.dispatch({
-    //         class: null,
-    //         type: 'newLobbyId',
-    //         message: this._lobbyId
-    //     })
-    // },
-
-    // get lobbyId() {
-    //     return this._lobbyId
-    // },
-
     reset() {
         this.echo.leave(`lobby.${Store.state.lobbyId}`)
         this.echo.leave(`lobby.${Store.state.gameId}`)
@@ -65,7 +39,7 @@ export default {
         return this.sendAxiosRequest(()=>axios.get(path, properties, config))
     },
     
-    //this.network.listen('GameEvent', 'move', (event)=>this.makeMove(event.message))
+    //Network.listen('GameEvent', 'move', (event)=>this.makeMove(event.message))
     listen(eventClass, type, callback) {
         this.listeners.push({
             class: eventClass,
@@ -139,9 +113,21 @@ export default {
         return promise
     },
 
-    joinLobby(lobbyId) {
+    joinLobby(lobbyId, resume=false) {
         const promise = this.post(`/lobby/${lobbyId}/join`)
         promise.then((response) => {
+            if(resume) {
+                this.get(`lobby/${lobbyId}/resume`).then(
+                    (response) => {
+                        this.dispatch({
+                            class: null,
+                            type: 'resume',
+                            message: response.data
+                        })
+
+                        this.listenGameChannel(response.data.id)
+                    })
+            }
             this.listenLobbyChannel(response.data.id)
         })
         

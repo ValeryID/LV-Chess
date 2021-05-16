@@ -1,4 +1,6 @@
 const mix = require('laravel-mix');
+require('laravel-mix-alias');
+const path = require('path');
 
 /*
  |--------------------------------------------------------------------------
@@ -21,7 +23,12 @@ mix.webpackConfig(webpack => {
             new webpack.DefinePlugin({
                 __VUE_OPTIONS_API__: JSON.stringify(true),
                 __VUE_PROD_DEVTOOLS__ : JSON.stringify(false),
-              })          
-        ]
+            })          
+        ],
+        resolve: {
+            alias: {
+                '@': __dirname + '/resources/js',
+            },
+        }
     }
 })

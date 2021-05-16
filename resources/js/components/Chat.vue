@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import Network from '../modules/network'
+import Network from '@/modules/network'
 
 export default {
     props: [],

@@ -3,15 +3,15 @@ let Vue = require('vue')
 
 import Echo from 'laravel-echo'
 
-import Network from './modules/network'
-import VueApp from './vueApp.js'
-import Store from './modules/storage'
+import Network from '@/modules/network'
+import VueApp from '@/vueApp.js'
+import Store from '@/modules/storage'
 
-import lobbyListComponent from './components/LobbyList.vue'
-import loginComponent from './components/Login.vue'
-import lobbyComponent from './components/Lobby.vue'
-import chatComponent from './components/Chat.vue'
-import boardComponent from './components/Board.vue'
+import lobbyListComponent from '@/components/LobbyList.vue'
+import loginComponent from '@/components/Login.vue'
+import lobbyComponent from '@/components/Lobby.vue'
+import chatComponent from '@/components/Chat.vue'
+import boardComponent from '@/components/board/Board.vue'
 
 window.Pusher = require('pusher-js');
 

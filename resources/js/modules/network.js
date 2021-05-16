@@ -1,4 +1,4 @@
-import Store from '../modules/storage'
+import Store from '@/modules/storage'
 
 export default {
     echo: null,

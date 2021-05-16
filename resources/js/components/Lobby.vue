@@ -46,8 +46,8 @@
 </template>
 
 <script>
-import Network from '../modules/network'
-import Store from '../modules/storage'
+import Network from '@/modules/network'
+import Store from '@/modules/storage'
 
 export default {
     props: [],

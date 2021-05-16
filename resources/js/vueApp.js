@@ -1,5 +1,5 @@
-import Network from './modules/network'
-import Store from './modules/storage'
+import Network from '@/modules/network'
+import Store from '@/modules/storage'
 
 const widescreenCap = 1000
 

@@ -299,6 +299,27 @@ button {
     }
 }
 
+.message {
+    @include light-div(auto);
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    font-weight: bold;
+    background-color: $form-background-yellow;
+}
+
+.message-name {
+    @include light-div(auto);
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    font-weight: bold;
+    line-height: 1.5;
+    vertical-align: middle;
+    margin-left: 3px;
+    text-align: center;
+    border-color: $form-background-dark;
+    background-color: $form-background-green;
+}
+
 .login-form {
 	@include light-dark-div();
 	flex-shrink: 1;

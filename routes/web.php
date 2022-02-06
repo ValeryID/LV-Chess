@@ -21,6 +21,7 @@ Route::get('/', function () {
 });
 
 Route::post('/login', [AuthController::class, 'authenticate']);
+Route::post('/register', [AuthController::class, 'register']);
 
 Route::get('/lobby/list', [LobbyController::class, 'list']);
 

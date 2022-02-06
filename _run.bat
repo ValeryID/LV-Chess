@@ -1,4 +1,5 @@
 start http://localhost:8000
-start php artisan websockets:serve
-php artisan serve
+set APP_ENV=win
+start php artisan websockets:serve --port=8001
+php artisan serve --host 0.0.0.0
 pause

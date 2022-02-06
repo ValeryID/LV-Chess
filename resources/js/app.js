@@ -20,7 +20,7 @@ function initNetwork() {
         broadcaster: 'pusher',
         key: 'wbe54yw45yw3',
         wsHost: window.location.hostname,
-        wsPort: 6001,
+        wsPort: 8001,
         forceTLS: false,
         disableStats: true,
     }))

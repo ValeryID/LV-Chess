@@ -20,7 +20,8 @@ const State = Store.state
 
 Store.findLobbyById = (id, status=[]) => {
     return State.lobbies.find(
-        (lobby) => lobby.id === id && (status.length === 0 || status.includes(lobby.status)))
+        (lobby) => lobby.id === id && (status.length === 0 || status.includes(lobby.status))
+    )
 }
 
 Store.lobby = () => Store.findLobbyById(State.lobbyId, ['open', 'started'])

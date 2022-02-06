@@ -27,7 +27,7 @@ export default {
         return request().then(d=>d, e=>{
             if([401, 419].includes(e.response.status)) Store.state.user = null
 
-            return new Promise((res, rej) => rej(e.response.status))
+            return new Promise((res, rej) => rej(e.response))
         })
     },
 
@@ -102,7 +102,10 @@ export default {
 
     login(email, password) {
         return this.post('/login', {email: email, password: password})
-        .then(resp => Store.state.user = resp.data, err => new Promise((res, rej) => rej(err)))
+        .then(
+            resp => {Store.state.user = resp.data; return new Promise((res, rej)=>res(resp.data))}, 
+            err => new Promise((res, rej)=>rej(err))
+        )
     },
 
     logout() {

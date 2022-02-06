@@ -1,5 +1,8 @@
 <template>
     <div v-if='!registerMode' class='login-form'>
+        <div v-for='error in loginErrors' class='message-info'>
+            {{error}}
+        </div>
         <div v-if='!user' class='light-div'>
             <input placeholder='email' v-model='email' type='email'/>
             <input placeholder='password' v-model='password' type='password'/>
@@ -16,7 +19,7 @@
     </div>
 
     <div v-else class='login-form'>
-        <div v-for='error in validationErrors' class='message'>
+        <div v-for='error in validationErrors' class='message-info'>
             {{error}}
         </div>
         <div class='light-div'>
@@ -44,18 +47,21 @@ export default {
             email: '',
             password: '',
             registerMode: false,
-            validationErrors: []
+            validationErrors: [],
+            loginErrors: []
         }
     },
     computed: {
         user() {
-            console.log(Store.state.user)
             return Store.state.user
         }
     },
     methods: {
         login() {
+            this.loginErrors = []
             Network.login(this.email, this.password)
+                .then(succ=>true)
+                .catch(err=>this.loginErrors.push(`Wrong ${err.data.reason}`))
         },
         logout() {
             Network.logout()

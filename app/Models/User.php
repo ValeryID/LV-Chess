@@ -9,7 +9,9 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 use App\Models\Interfaces\CardableInterface;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Config;
 
 class User extends Authenticatable implements CardableInterface
 {
@@ -43,6 +45,7 @@ class User extends Authenticatable implements CardableInterface
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'active_until' => 'datetime'
     ];
 
     public function getCard() 
@@ -64,5 +67,19 @@ class User extends Authenticatable implements CardableInterface
         $lobbies->each(fn ($lobby) => $lobby->leave($this));
 
         return $lobbies->count();
+    }
+
+    public function ping(): bool
+    {
+        $this->active_until = Carbon::now(config('app.timezone'))
+            ->addSeconds(config('game.user.ping_expire_time'))
+            ->isoFormat('YYYY-MM-DD hh:mm:ss');
+
+        return $this->save();
+    }
+
+    public function isActive(): bool
+    {
+        return Carbon::now(config('app.timezone'))->lt($this->active_until);
     }
 }

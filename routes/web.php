@@ -27,6 +27,7 @@ Route::get('/lobby/list', [LobbyController::class, 'list']);
 
 Route::middleware('auth')->group(function() {
     Route::post('/logout', [AuthController::class, 'discard']);
+    Route::post('/ping', [UserController::class, 'ping']);
     Route::get('/user/{user?}', [UserController::class, 'getUserCard']);
 
     Route::post('/lobby/make', [LobbyController::class, 'makeLobby']);

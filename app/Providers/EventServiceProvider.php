@@ -34,7 +34,10 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // if(!app()->runningInConsole()) {
         Lobby::observe(LobbyObserver::class);
         Game::observe(GameObserver::class);
+        // }
+        
     }
 }

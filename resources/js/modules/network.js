@@ -8,9 +8,9 @@ export default {
         this.echo = echo
         this.listeners = []
 
-        this.syncUser()
-
         this.echo.channel(`lobbies`).listen('LobbyEvent', (e)=>this.onLobbyEvent(e))
+
+        return this.syncUser()
     },
 
     reset() {
@@ -20,7 +20,7 @@ export default {
     },
 
     syncUser() {
-        this.getUser().then(user => Store.state.user = user, err => Store.state.user = null)
+        return this.getUser().then(user => Store.state.user = user, err => Store.state.user = null)
     },
 
     sendAxiosRequest(request) {
@@ -177,6 +177,12 @@ export default {
         if(!Store.lobby()) return;
 
         return this.post(`/lobby/${Store.lobby().id}/chat`, { message: message })
+    },
+
+    ping() {
+        if(!Store.state.user) return;
+
+        return this.post(`/ping`)
     },
 
     getLobbies() {

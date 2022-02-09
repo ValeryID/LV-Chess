@@ -15,8 +15,8 @@ import boardComponent from '@/components/board/Board.vue'
 
 window.Pusher = require('pusher-js');
 
-function initNetwork() {
-    Network.init(new Echo({
+async function initNetwork() {
+    await Network.init(new Echo({
         broadcaster: 'pusher',
         key: 'wbe54yw45yw3',
         wsHost: window.location.hostname,
@@ -24,9 +24,12 @@ function initNetwork() {
         forceTLS: false,
         disableStats: true,
     }))
+
+    Network.ping()
+    setInterval(()=>Network.ping(), 30 * 1000)
 }
 
-function initVue() {
+async function initVue() {
     const app = Vue.createApp(VueApp)
     
     app.component('lobbylist', lobbyListComponent)
@@ -39,9 +42,9 @@ function initVue() {
     app.mount('#app')
 }
 
-function init() {
-    initNetwork()
-    initVue()
+async function init() {
+    await initNetwork()
+    await initVue()
 }
 
 document.addEventListener("DOMContentLoaded", init);

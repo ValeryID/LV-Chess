@@ -16,4 +16,10 @@ class UserController extends Controller
 
         return response()->json($user->getCard());
     }
+
+    public function ping(Request $request)
+    {
+        if($currentUser = $request->user())
+            $currentUser->ping();
+    }
 }

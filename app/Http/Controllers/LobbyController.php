@@ -74,14 +74,14 @@ class LobbyController extends Controller
         // dd(DB::getQueryLog(), $collection);
 
         //DB::enableQueryLog();
-        $collection = Lobby::fromQuery('
+        $collection = Lobby::fromQuery("
             select lobbies.*
             from lobbies 
                 left join games on games.lobby_id = lobbies.id
                 left join users on lobbies.host_id = users.id
-            where lobbies.public = "true" and 
+            where lobbies.public = 'true' and 
             CURRENT_TIMESTAMP < users.active_until and
-            (lobbies.status = "open" or (lobbies.status = "started" and games.result is NULL))');
+            (lobbies.status = 'open' or (lobbies.status = 'started' and games.result is NULL))");
         //dd(DB::getQueryLog(), $collection);
 
         //dd($collection);

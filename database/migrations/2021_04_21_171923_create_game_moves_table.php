@@ -19,7 +19,7 @@ class CreateGameMovesTable extends Migration
             $table->char('algebraic', 4);
             $table->timestamps();
 
-            $table->foreign('game_id')->references('id')->on('games');
+            //$table->foreign('game_id')->references('id')->on('games');
         });
     }
 

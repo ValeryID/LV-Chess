@@ -103,7 +103,7 @@ button {
 	@include app-layout();
 	justify-content: flex-end;
 	align-items: center;
-	width: 100%; 
+	width: 100%;
 	height: 100%;
 
 	flex-grow: 1;
@@ -119,6 +119,7 @@ button {
 		flex-grow: 1;
 
 		width: 100%;
+        max-height: 100%;
 		
 		background-color: black;
 		box-sizing: border-box;
@@ -366,77 +367,110 @@ button {
 	.board {
 		@include form-div();
 
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
 		flex-grow: 1;
 		flex-shrink: 1;
 
 		$col: rgb(65, 65, 65);
 		background-color: $col;
 		border: 3px solid $col;
+        padding: 0px;
 		//box-shadow: 0px 0px 26px 0px $col;
-		padding: 5px;
 
 		box-sizing: border-box;
 
-		.canvas-div {
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
+        .canvas-container {
+            position: relative;
+            // width: 100%;
+            // padding-top: 100%;
+        }
 
-			.alert {
-				position: absolute;
-				z-index: 3;
-				background: rgba(0, 0, 0, 0.5);
+        .shadow {
+            position: absolute;
 
-				flex-grow: 0;
-				flex-shrink: 0;
-				
-				width: 100%;
-				height: 100%; 
-				box-sizing: border-box;
+            width: 100%;
+            height: 100%;
 
-				label {
-					$background-color: rgb(27, 255, 168);
-					transform: translate(0, -50%);
-					//font: italic 30px sans-serif;
-					font-style: italic;
-					font-size: 30px;
-					color: rgb(54, 54, 54);
-					text-align: center;
-					padding: 6px;
-					display: block;
-					z-index: 4;
-					box-sizing: border-box;
-					margin-top: 50%;
-					width: 100%;
-					opacity: 100%;
-					box-shadow: 0 0 16px 0 $background-color;
-					background-color: $background-color;
-				}
-			}
+            top: 0px;
+            left: 0px;
 
-			.shadow {
-				position: absolute;
-				z-index: 2;
-				background: rgba(0, 0, 0, 0);
+            z-index: 2;
+            
+            background: rgba(0, 0, 0, 0);
 
-				box-sizing: border-box;
-				width: 100%;
-				height: 100%;
-				box-shadow: 0 0 20px 0px #000000 inset;
+            box-sizing: border-box;
+            box-shadow: 0 0 20px 0px #000000 inset;
 
-				pointer-events: none;
-			}
+            pointer-events: none;
+        }
 
-			canvas {
-				position: absolute;
-				z-index: 1;
-				width: 100%;
-				height: 100%;
-			}
+        .canvas-image {
+            position: absolute;
+            object-fit: fill;
+
+            width: 100%;
+            height: 100%;
+
+            top: 0px;
+            left: 0px;
+
+            z-index: 1;
 		}
 
+        .alert {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            
+            position: absolute;
+            z-index: 3;
+            background: rgba(0, 0, 0, 0.5);
+
+            flex-grow: 0;
+            flex-shrink: 0;
+            
+            width: 100%;
+            height: 100%; 
+            box-sizing: border-box;
+
+            label {
+                $background-color: rgb(27, 255, 168);
+                font-style: italic;
+                font-size: 30px;
+                color: rgb(54, 54, 54);
+                text-align: center;
+                padding: 6px;
+                display: block;
+                z-index: 4;
+                box-sizing: border-box;
+                width: 100%;
+                opacity: 100%;
+                box-shadow: 0 0 16px 0 $background-color;
+                background-color: $background-color;
+            }
+        }
 	}
+
+    .board.flex-vertical-square {
+        flex-direction: column;
+
+        canvas {
+            height: auto; 
+            width: 100%;
+        }
+    }
+
+    .board.flex-horizontal-square {
+        flex-direction: row;
+
+        canvas {
+            height: 100%; 
+            width: auto;
+        }
+    }
 
 	.gameinfo {
 		background-color: scale-color($form-background-dark, $lightness: -35%);

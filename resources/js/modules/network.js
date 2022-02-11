@@ -55,7 +55,7 @@ export default {
     },
 
     onGameEvent(event) {
-        console.log(event)
+        //console.log(event)
         this.dispatch(event)
 
         switch(event.type) {
@@ -64,7 +64,7 @@ export default {
     },
     
     onLobbyEvent(event) {
-        console.log(event)
+        //console.log(event)
         this.dispatch(event)
 
         switch(event.type) {
@@ -165,12 +165,10 @@ export default {
 
     sendTimeOver(color) {
         return this.post(`/game/${Store.state.gameId}/timeover/${color}`)
-            .then(data=>console.log(data))
     },
 
     sendVictory(color) {
         return this.post(`/game/${Store.state.gameId}/victory/${color}`)
-            .then(data=>console.log(data))
     },
 
     sendChatMessage(message) {

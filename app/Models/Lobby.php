@@ -90,7 +90,7 @@ class Lobby extends Model implements CardableInterface
 
     public function startGame(): ?Game
     {
-        if($this->playersReady()) {
+        if($this->playersReady() || $this->public === 'false') {
             $game = Game::make($this);
             $this->status = 'started';
             $this->save();

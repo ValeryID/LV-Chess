@@ -1,38 +1,27 @@
 export default class {
-    constructor(canvas, spriteSheet, width=800, height=800, spriteWidth=100) {
-        this.canvas = canvas
+    constructor(bufferImage, spriteSheet, width=800, height=800, spriteWidth=100) {
+        this.canvas = document.createElement('canvas')
+        this.canvas.width = width
+        this.canvas.height = height
+
+        this.bufferImage = bufferImage
         this.spriteSheet = spriteSheet
-        this.initialWidth = width
-        this.initialHeight = height
         this.spriteWidth = spriteWidth
 
         this.ctx = this.canvas.getContext('2d')
 
         this.board = this.cursor = this.moveStart = this.moveEnd = null;
 
-        this.resetScale()
-    }
-
-
-    resetScale() {
-        this.scale = this.canvas.height / this.initialHeight;
-        
-        this.width = this.height = this.spriteWidth * this.scale * 8
-        this.pieceSize = this.spriteWidth * this.scale
-
-        if(this.prevScale !== this.scale) {
-            this.prevScale = this.scale
-            this.render()
-        }
+        this.pieceSize = this.spriteWidth
     }
 
     clear() {
         this.ctx.fillStyle = "#000";
-        this.ctx.fillRect(0, 0, this.width, this.height);
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     getCeil(x, y) {
-        let transform = (a) => Math.floor(a / (this.spriteWidth * this.scale))
+        let transform = (a) => Math.floor(a / this.spriteWidth)
         return [transform(x), 7-transform(y)]
     }
 
@@ -54,13 +43,24 @@ export default class {
             newWidth, newWidth)
     }
 
+    updateBufferImage() {
+        this.bufferImage.src = this.canvas.toDataURL()
+    }
+
     render() {
         this.renderBoard()
         this.renderCursor()
         this.renderMove()
+
+        this.updateBufferImage()
     }
 
     renderBoard() {
+        // console.log(this.spriteSheet, 
+        //     this.spriteWidth, this.spriteWidth, 
+        //     this.spriteWidth, this.spriteWidth, 
+        //     this.pieceSize,this.pieceSize, 
+        //     this.pieceSize, this.pieceSize)
         if(!this.board) return
         
         this.clear()
@@ -103,15 +103,15 @@ export default class {
             case 'promotion': this.ctx.strokeStyle = '#8616ab'; break;
         }
 
-        this.ctx.lineWidth = 5 * this.scale;
+        this.ctx.lineWidth = 5;
 
         this.ctx.beginPath()
         this.ctx.moveTo(
             this.move.start[0] * this.pieceSize + this.pieceSize / 2, 
-            this.height - this.move.start[1] * this.pieceSize - this.pieceSize / 2)
+            this.canvas.height - this.move.start[1] * this.pieceSize - this.pieceSize / 2)
         this.ctx.lineTo(
             this.move.end[0] * this.pieceSize + this.pieceSize / 2, 
-            this.height - this.move.end[1] * this.pieceSize - this.pieceSize / 2)
+            this.canvas.height - this.move.end[1] * this.pieceSize - this.pieceSize / 2)
         this.ctx.stroke()
     }
 

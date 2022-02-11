@@ -18,6 +18,7 @@ class AuthController extends Controller//$request->user()
         
         if ($user && Hash::check($password, $user->password)) {
             Auth::login($user);
+            $user->ping();
             
             return response($user->getCard());
         }

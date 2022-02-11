@@ -14,7 +14,7 @@ class AddActiveUntilToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->timestampTz('active_until')->default('2000-01-01 00:00:00 +00:00');
+            $table->dateTimeTz('active_until')->default('2000-01-01 00:00:00 +00:00');
         });
     }
 

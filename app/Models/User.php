@@ -73,7 +73,7 @@ class User extends Authenticatable implements CardableInterface
     {
         $this->active_until = Carbon::now(config('app.timezone'))
             ->addSeconds(config('game.user.ping_expire_time'))
-            ->isoFormat('YYYY-MM-DD hh:mm:ss Z');
+            ->isoFormat('YYYY-MM-DD H:m:s Z');
 
         return $this->save();
     }

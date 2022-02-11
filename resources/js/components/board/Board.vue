@@ -1,12 +1,13 @@
 <template>
     <div class='board-container'>
-        <div class='board'>
-            <div class='canvas-div' :style="{width: canvasWidth + 'px', height: canvasWidth + 'px'}">
-                <div class='alert' v-if='!started'>
-                    <label v-if='result'><b>{{result}} player wins</b></label>
-                </div>
-                <div class='shadow'></div>
-                <canvas @click='onClick' id='board-canvas' :width='canvasWidth' :height='canvasWidth'/>
+        <div class='board flex-horizontal-square' id='board'>
+            <div class='alert' v-if='!started'>
+                <label v-if='result'><b>{{result}} player wins</b></label>
+            </div>
+            <div class='canvas-container'>
+                <canvas width='1' height='1'></canvas>
+                <div class='shadow' id='shadow-div'></div>
+                <img class='canvas-image' id='board-canvas' @click='onClick' draggable="false"/>
             </div>
         </div>
         <div class='gameinfo'>
@@ -23,7 +24,9 @@
 import Network from '@/modules/network'
 import Renderer from '@/modules/renderer'
 import Store from '@/modules/storage'
+import AI from '@/modules/ai'
 import Chess from '@/lib/chess'
+
 
 import Takes from '@/components/board/Takes.vue'
 
@@ -35,7 +38,7 @@ export default {
     },
     data() {
         return {
-            canvasWidth: null,
+            canvasWidth: 800,
             whitePlayerTime: null,
             blackPlayerTime: null,
             started: false,
@@ -44,12 +47,6 @@ export default {
         }
     },
     methods: {
-        calcCanvasWidth() {
-            const box = document.querySelector('.board').getBoundingClientRect()
-            this.canvasWidth = ~~Math.min(box.width-14, box.height-14)
-            this.renderer.resetScale()
-        },
-
         init() {
             if(this.tickInterval) clearInterval(this.tickInterval)
             this.tickInterval = setInterval(() => {
@@ -67,6 +64,14 @@ export default {
             this.renderer.render()
         },
 
+        updateBoardOrientationClass() {
+            const boundingBox = this.board.getBoundingClientRect()
+            if(boundingBox.width > boundingBox.height) 
+                this.board.className = 'board flex-horizontal-square'
+            else
+                this.board.className = 'board flex-vertical-square'
+        },
+
         restart(gameState=null) {
             this.started = true
             this.result = null
@@ -81,7 +86,9 @@ export default {
             const lobby = Store.lobby()
 
             if(lobby) {
-                console.log('ggg', this.whitePlayerTime = this.blackPlayerTime = lobby.time_limit)
+                this.whitePlayerTime = this.blackPlayerTime = lobby.time_limit
+                if(lobby.guest === null && lobby.host_color === 'b')
+                    this.makeAiMove()
             }
 
             if(gameState) {
@@ -91,6 +98,10 @@ export default {
                 for(const move of gameState.moves) this.makeMove(move.algebraic)
             }
             
+        },
+
+        myTurn() {
+            return this.engine.turn() === this.color
         },
 
         finishGame(result) {
@@ -168,24 +179,47 @@ export default {
             return false
         },
 
-        onClick(e) {
+        onlineGame() {
+            return Store.lobby().public === 'true'
+        },
+
+        async makeAiMove() {
+            const aiMove = await AI.getAlgebraicMove(this.engine.fen())
+            if(aiMove === null) this.finishGame(Store.lobby().host_color)
+            else {
+                this.makeMove(aiMove)
+                if(!this.engine.moves().length) 
+                    this.finishGame(Store.lobby().host_color==='w'?'b':'w')
+            }
+        },
+
+        async onClick(e) {
             const boundingBox = this.canvas.getBoundingClientRect()
             const boardPos = this.renderer.getCeil(
-                e.offsetX / boundingBox.width * this.canvas.width, 
-                e.offsetY / boundingBox.height * this.canvas.height)
+                e.offsetX / boundingBox.width * this.canvasWidth, 
+                e.offsetY / boundingBox.height * this.canvasWidth)
 
             if(this.ceilSelected) {
                 let algebraicStart = this.arrayToAlgebraic(this.ceilSelected)
                 let algebraicEnd = this.arrayToAlgebraic(boardPos)
 
-                if(this.tryMove(algebraicStart, algebraicEnd)) 
-                    Network.sendMove(algebraicStart + algebraicEnd)
+                if(this.tryMove(algebraicStart, algebraicEnd)) {
+                    const myMove = algebraicStart + algebraicEnd
+
+                    if(this.onlineGame()) {
+                        Network.sendMove(myMove)
+                    } else {
+                        this.makeMove(myMove)
+                        await this.makeAiMove()
+                    }
+                }
                 
                 this.ceilSelected = null
                 this.renderer.setCursor(null)
 
             } else {
-                let piece = this.getPiece(boardPos)
+                //console.log(boardPos)
+                const piece = this.getPiece(boardPos)
                 if(piece && piece.color === this.color) {
                     this.ceilSelected = boardPos
                     this.renderer.setCursor(this.ceilSelected)
@@ -194,16 +228,16 @@ export default {
         },
     },
     async mounted() {
-        clearInterval(this.interval)
-        this.interval = setInterval(()=>this.calcCanvasWidth(), 500)
-        
-        window.addEventListener('resize', (e)=>this.calcCanvasWidth())
-
         this.canvas = this.$el.querySelector('#board-canvas')
-        this.renderer = new Renderer(this.canvas, Store.state.spriteSheet)
-        this.engine = new Chess()
+        this.board = this.$el.querySelector('#board')
 
-        Network.listen(null, 'resume', (event)=>this.restart(event.message))
+        this.renderer = new Renderer(this.canvas, Store.state.spriteSheet, this.canvasWidth, this.canvasWidth)
+        window.engine = this.engine = new Chess()
+
+        this.updateBoardOrientationClass()
+        window.addEventListener('resize', ()=>this.updateBoardOrientationClass())
+
+        Network.listen(null, 'resume', (event) => this.restart(event.message))
         Network.listen('GameEvent', 'move', (event) => this.makeMove(event.message))
         Network.listen('GameEvent', 'created', () => this.restart())
         //Network.listen('GameEvent', 'result', (event) => this.finishGame(event.message))

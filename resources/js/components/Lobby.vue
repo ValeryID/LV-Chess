@@ -10,7 +10,11 @@
                 <div style="clear: both"/>
             </div>
             <div>
-                <label><i>Guest</i> <span>{{lobby&&lobby.guest ? lobby.guest.name : '...'}}</span></label>
+                <label><i>Guest</i><span>
+                {{
+                    (lobby && lobby.guest) ? lobby.guest.name : (lobby && lobby.public === 'false' ? 'AI' : '...')
+                }}
+                </span></label>
                 <div style="clear: both"/>
             </div>
             <div>
@@ -25,7 +29,7 @@
                 <label><i>Public</i> </label>
                 <select v-model='public' :disabled='!configEnabled()'>
                     <option value='true'>true</option>
-                    <!--<option value='false'>false</option>-->
+                    <option value='false'>false</option>
                 </select>
                 <div style="clear: both"/>
             </div>
@@ -101,7 +105,7 @@ export default {
             return !this.isHost() || !this.isLobbyOpen()
         },
         canStart() {
-            return this.isLobbyOpen() && this.isHost() && this.lobby.guest
+            return this.isLobbyOpen() && this.isHost() && (this.lobby.guest || this.lobby.public === 'false')
         }
     },
     // created() {

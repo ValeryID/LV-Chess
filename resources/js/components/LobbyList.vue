@@ -30,8 +30,6 @@ export default {
     },
     computed: {
         lobbies() {
-            console.log('lobbies')
-            
             return Store.state.lobbies
         },
     },

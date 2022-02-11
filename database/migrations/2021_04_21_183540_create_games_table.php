@@ -15,8 +15,8 @@ class CreateGamesTable extends Migration
     {
         Schema::create('games', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('white_player_id');
-            $table->unsignedBigInteger('black_player_id');
+            $table->unsignedBigInteger('white_player_id')->nullable();
+            $table->unsignedBigInteger('black_player_id')->nullable();
             $table->enum('turn', ['w', 'b'])->default('w');
             $table->enum('result', ['w', 'b', 'error'])->nullable();
             $table->enum('white_player_result', ['w', 'b'])->nullable();

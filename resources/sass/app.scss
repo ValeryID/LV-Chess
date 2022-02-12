@@ -9,7 +9,7 @@ html {
 
 body {
 	@include font();
-	background: rgb(61, 61, 61);
+	background-color: $body-background;
 	margin: 0;
 	padding: 0;
 	width: 100%;
@@ -70,6 +70,8 @@ button {
 	align-items: center;
 	width: 100%; 
 	height: 100%;
+    max-width: 1500px;
+    margin: auto;
 
 	.app-layout-horizontal {
 		@include app-layout();
@@ -374,7 +376,7 @@ button {
 		flex-grow: 1;
 		flex-shrink: 1;
 
-		$col: rgb(65, 65, 65);
+		$col: rgb(66, 66, 66);
 		background-color: $col;
 		border: 3px solid $col;
         padding: 0px;
@@ -427,7 +429,7 @@ button {
             
             position: absolute;
             z-index: 3;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0);
 
             flex-grow: 0;
             flex-shrink: 0;

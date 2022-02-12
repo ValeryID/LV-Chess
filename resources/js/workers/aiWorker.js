@@ -9,7 +9,7 @@ onmessage = function(e) {
 
 function getMove(fen) {
     const ai = new ChessAI(fen)
-    const aiMove = ai.minimax().move
+    const aiMove = ai.alphabeth().move
     const aiMoveResult = aiMove === null ? null : ai.chess.move(aiMove)
     console.log(ai.evalPosition())
     return aiMoveResult
@@ -21,7 +21,7 @@ function evalPos(fen) {
 }
 
 class ChessAI {
-    constructor(fen = null, maxDepth = 2) {
+    constructor(fen = null, maxDepth = 3) {
         this.chess = fen ? new Chess(fen) : new Chess()
         this.maxDepth = maxDepth
     }
@@ -33,11 +33,12 @@ class ChessAI {
             n: 30,
             b: 40,
             q: 100,
-            k: 10000,
-            check: 20,
+            k: 200,
+            check: 5,
             checkmate: Infinity,
             guard: 1,
             move: 0.5,
+            pawnY: 1
         }
     
         const board = node.board()
@@ -52,8 +53,8 @@ class ChessAI {
             let price = isWhite ? prices[piece.type] : -prices[piece.type]
 
             if(piece.type === 'p') {
-                if(isWhite) price += (7 - y)
-                else price -= y
+                if(isWhite) price += (7 - y) * prices.pawnY
+                else price -= y * prices.pawnY
             }
 
             for(const dx of [1, -1]) {
@@ -73,10 +74,10 @@ class ChessAI {
         if(node.in_check()) 
             score += node.turn() === 'w' ? -prices.check : prices.check
         
-        score += node.moves().length * (node.turn() === 'w' ? 1 : -1) * prices.move
-        this.swapNodeColors(node)
-        score += node.moves().length * (node.turn() === 'w' ? 1 : -1) * prices.move
-        this.swapNodeColors(node)
+        // score += node.moves().length * (node.turn() === 'w' ? 1 : -1) * prices.move
+        // this.swapNodeColors(node)
+        // score += node.moves().length * (node.turn() === 'w' ? 1 : -1) * prices.move
+        // this.swapNodeColors(node)
     
         return score
     }
@@ -100,63 +101,77 @@ class ChessAI {
         return newNode
     }
 
-    minimax(node = this.chess, depth = 0) {
+    // minimax(node = this.chess, depth = 0) {
+    //     if(depth === this.maxDepth) return {
+    //         score: this.evalPosition(node),
+    //         move: null
+    //     }
+
+    //     const maxing = node.turn() === 'w'
+
+    //     const cmp = maxing ? Math.max : Math.min
+    //     let bestScore = maxing ? -Infinity : Infinity
+    //     let bestMove = null
+
+    //     for(const move of node.moves()) {
+    //         //if(Math.random() > 0.97 ) break
+    //         const nextIteration = this.minimax(this.moveNode(node, move), depth + 1)
+    //         const newBest = cmp(bestScore, nextIteration.score) === nextIteration.score
+    //         if(newBest) {
+    //             bestScore = nextIteration.score
+    //             bestMove = move
+    //         }
+    //     }
+
+    //     return {
+    //         score: bestScore,
+    //         move: bestMove
+    //     }
+    // }
+
+    alphabeth(node = this.chess, depth = 0, a = -Infinity, b = Infinity) {
         if(depth === this.maxDepth) return {
             score: this.evalPosition(node),
-            move: null
+            move: null,
+            moveChain: []
         }
 
         const maxing = node.turn() === 'w'
 
         const cmp = maxing ? Math.max : Math.min
-        let bestScore = maxing ? -Infinity : Infinity
+        
+        let bestIteration = {
+            score: maxing ? -Infinity : Infinity,
+            move: null,
+            moveChain: []
+        }
         let bestMove = null
-
-        for(const move of node.moves()) {
-            //if(Math.random() > 0.97 ) break
-            const nextIteration = this.minimax(this.moveNode(node, move), depth + 1)
-            const newBest = cmp(bestScore, nextIteration.score) === nextIteration.score
-            if(newBest) {
-                bestScore = nextIteration.score
-                bestMove = move
-            }
-        }
-
-        return {
-            score: bestScore,
-            move: bestMove
-        }
-    }
-
-    alphabeth(node = this.chess, depth = 0, a = {val: -Infinity}, b = {val: Infinity}) {
-        if(depth === this.maxDepth) return {
-            score: this.evalPosition(node),
-            move: null
-        }
-
-        const maxing = node.turn() === 'w'
-
-        const cmp = maxing ? Math.max : Math.min
-        let bestScore = maxing ? -Infinity : Infinity
-        let bestMove = null
-        let [optim, cutoff] = maxing ? [a, b] : [b, a]
 
         for(const move of node.moves()) {
             const nextIteration = this.alphabeth(this.moveNode(node, move), depth + 1, a, b)
-            const newBest = cmp(bestScore, nextIteration.score) === nextIteration.score
-            if(newBest) {
-                bestScore = nextIteration.score
+
+            if(cmp(bestIteration.score, nextIteration.score) === nextIteration.score) {
+                bestIteration = nextIteration
                 bestMove = move
             }
 
-            optim.val = cmp(optim.val, bestScore)
-            if(cmp(bestScore, cutoff.val) !== bestScore)
-                break
+            if(maxing) {
+                if(bestIteration.score > b) break
+                a = bestIteration.score
+            } else {
+                if(bestIteration.score < a) break
+                b = bestIteration.score
+            }
         }
 
+        const moveChain = [bestMove, ...bestIteration.moveChain]
+
+        if(depth === 0) console.log(moveChain)
+
         return {
-            score: bestScore,
-            move: bestMove
+            score: bestIteration.score,
+            move: bestMove,
+            moveChain: moveChain
         }
     }
 }

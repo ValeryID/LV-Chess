@@ -130,40 +130,66 @@ export default {
             return this.engine.board()[7-array[1]][array[0]]
         },
 
-        tryMove(algebraicStart, algebraicEnd) {
-            let move = {}
-            let result = this.engine.move(move = { from: algebraicStart, to: algebraicEnd })
-            if(!result) result = this.engine.move(move = { from: algebraicStart, to: algebraicEnd, promotion: 'q' })
-            
-            if(result) this.engine.undo()
+        separateAlgebraic(algebraic) {
+            const algebraicStart = algebraic.slice(0, 2)
+            const algebraicEnd = algebraic.slice(2, 4)
+            return [algebraicStart, algebraicEnd]
+        },
+
+        tryMove(algebraic) {
+            let result, move = {}
+            if(['O-O-O', 'O-O'].includes(algebraic)) {
+                result = this.engine.move(move = algebraic)
+                if(result) this.engine.undo()
+            } else {
+                const [algebraicStart, algebraicEnd] = this.separateAlgebraic(algebraic)
+                result = this.engine.move(move = { from: algebraicStart, to: algebraicEnd })
+                if(!result) result = this.engine.move(move = { from: algebraicStart, to: algebraicEnd, promotion: 'q' })
+                if(result) this.engine.undo()
+            }
 
             return result ? move : null
         },
 
         makeMove(algebraic) {
             const playerColor = this.engine.turn()
-            let type = 'move';
+            const castling = ['O-O-O', 'O-O'].includes(algebraic)
+            let type = 'move'
+            let move = null
 
-            const algebraicStart = algebraic.slice(0, 2)
-            const algebraicEnd = algebraic.slice(2, 4)
+            if(castling) {
+                move = this.tryMove(algebraic)
 
-            if(this.engine.get(algebraicEnd) !== null) {
-                type = 'take'
-                this.takes = [...this.takes, this.engine.get(algebraicEnd)]
+                if(move) {
+                    this.engine.move(move)
+                    const moveY = playerColor === 'w' ? 0 : 7
+                    const moveX = algebraic === 'O-O-O' ? 2 : 5
+                    
+                    this.renderer.setMove({start: [moveX, moveY], end: [moveX + 1, moveY], type: 'promotion'})
+                }
+            } else {
+                const [algebraicStart, algebraicEnd] = this.separateAlgebraic(algebraic)
+
+                if(this.engine.get(algebraicEnd) !== null) {
+                    type = 'take'
+                    this.takes = [...this.takes, this.engine.get(algebraicEnd)]
+                }
+
+                move = this.tryMove(algebraic)
+                
+                if(move) {
+                    this.engine.move(move)
+
+                    if(move.promotion) type = 'promotion'
+
+                    const arrayStart = this.algebraicToArray(algebraicStart)
+                    const arrayEnd = this.algebraicToArray(algebraicEnd)
+                    
+                    this.renderer.setMove({start: arrayStart, end: arrayEnd, type: type})
+                }
             }
 
-            let move = this.tryMove(algebraicStart, algebraicEnd)
-            
-            if(move) {
-                this.engine.move(move)
-
-                if(move.promotion) type = 'promotion'
-
-                const arrayStart = this.algebraicToArray(algebraicStart)
-                const arrayEnd = this.algebraicToArray(algebraicEnd)
-                this.renderer.setBoard(this.engine.board())
-                this.renderer.setMove({start: arrayStart, end: arrayEnd, type: type})
-            }
+            this.renderer.setBoard(this.engine.board())
 
             if(this.engine.game_over()) Network.sendVictory(playerColor)
 
@@ -193,19 +219,45 @@ export default {
             }
         },
 
+        isCastling(algebraicStart, algebraicEnd) {
+            if( 
+                (this.engine.get(algebraicStart) && this.engine.get(algebraicEnd)) &&
+                (this.engine.get(algebraicStart).color === this.engine.get(algebraicEnd).color) && 
+                (
+                    (this.engine.get(algebraicStart).type === 'r' && this.engine.get(algebraicEnd).type === 'k') ||
+                    (this.engine.get(algebraicStart).type === 'k' && this.engine.get(algebraicEnd).type === 'r')
+                )
+            ) {
+                if(algebraicStart[0] === 'a' || algebraicEnd[0] === 'a') return 'O-O-O'
+                if(algebraicStart[0] === 'h' || algebraicEnd[0] === 'h') return 'O-O'
+            }
+
+            return null
+        },
+
         async onClick(e) {
             const boundingBox = this.canvas.getBoundingClientRect()
             const boardPos = this.renderer.getCeil(
                 e.offsetX / boundingBox.width * this.canvasWidth, 
                 e.offsetY / boundingBox.height * this.canvasWidth)
 
+            const piece = this.getPiece(boardPos)
+
             if(this.ceilSelected) {
                 let algebraicStart = this.arrayToAlgebraic(this.ceilSelected)
                 let algebraicEnd = this.arrayToAlgebraic(boardPos)
 
-                if(this.tryMove(algebraicStart, algebraicEnd)) {
-                    const myMove = algebraicStart + algebraicEnd
+                const castlingMove = this.isCastling(algebraicStart, algebraicEnd)
 
+                let myMove = null
+                
+                if(castlingMove) myMove = castlingMove
+                else myMove = algebraicStart + algebraicEnd
+
+                this.ceilSelected = null
+                this.renderer.setCursor(null)
+
+                if(this.tryMove(myMove)) {
                     if(this.onlineGame()) {
                         Network.sendMove(myMove)
                     } else {
@@ -213,13 +265,8 @@ export default {
                         await this.makeAiMove()
                     }
                 }
-                
-                this.ceilSelected = null
-                this.renderer.setCursor(null)
 
             } else {
-                //console.log(boardPos)
-                const piece = this.getPiece(boardPos)
                 if(piece && piece.color === this.color) {
                     this.ceilSelected = boardPos
                     this.renderer.setCursor(this.ceilSelected)
@@ -231,11 +278,13 @@ export default {
         this.canvas = this.$el.querySelector('#board-canvas')
         this.board = this.$el.querySelector('#board')
 
-        this.renderer = new Renderer(this.canvas, Store.state.spriteSheet, this.canvasWidth, this.canvasWidth)
+        window.renderer = this.renderer = new Renderer(this.canvas, Store.state.spriteSheet, this.canvasWidth, this.canvasWidth)
         window.engine = this.engine = new Chess()
 
         this.updateBoardOrientationClass()
-        window.addEventListener('resize', ()=>this.updateBoardOrientationClass())
+        window.addEventListener('resize', ()=>{
+            setTimeout(()=>this.updateBoardOrientationClass(), 200)
+        })
 
         Network.listen(null, 'resume', (event) => this.restart(event.message))
         Network.listen('GameEvent', 'move', (event) => this.makeMove(event.message))

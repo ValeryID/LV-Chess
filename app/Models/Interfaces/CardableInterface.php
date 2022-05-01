@@ -1,7 +1,8 @@
 <?php
+
 namespace App\Models\Interfaces;
 
-Interface CardableInterface
+interface CardableInterface
 {
     public function getCard();
 }

@@ -15,7 +15,9 @@ use Illuminate\Support\Facades\Config;
 
 class User extends Authenticatable implements CardableInterface
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -48,11 +50,12 @@ class User extends Authenticatable implements CardableInterface
         'active_until' => 'datetime'
     ];
 
-    public function getCard() 
+    public function getCard()
     {
-        foreach(['id', 'name', 'rating'] as $prop)
+        foreach (['id', 'name', 'rating'] as $prop) {
             $card[$prop] = $this->$prop;
-            
+        }
+
         return $card;
     }
 

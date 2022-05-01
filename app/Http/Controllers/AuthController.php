@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use \Illuminate\Http\Request;
-use \Illuminate\Support\Facades\Auth;
-use \Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
-class AuthController extends Controller//$request->user()
+class AuthController extends Controller //$request->user()
 {
     public function authenticate(Request $request)
     {
@@ -15,18 +15,19 @@ class AuthController extends Controller//$request->user()
         $password = $request->input('password', '');
 
         $user = User::where('email', $email)->first();
-        
+
         if ($user && Hash::check($password, $user->password)) {
             Auth::login($user);
             $user->ping();
-            
+
             return response($user->getCard());
         }
 
         return response(['reason' => $user ? 'password' : 'email'], 403);
     }
-    
-    public function register(Request $request) {
+
+    public function register(Request $request)
+    {
         $validated = $request->validate([
             'name' => 'required|unique:App\Models\User,name|max:23|min:3',
             'email' => 'required|unique:App\Models\User,email|email|max:31|min:3',
@@ -41,11 +42,11 @@ class AuthController extends Controller//$request->user()
 
         return response([$validated], 200);
     }
-    
+
     public function discard()
     {
         Auth::logout();
-        
+
         return response('success');
     }
 

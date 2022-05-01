@@ -38,6 +38,5 @@ class EventServiceProvider extends ServiceProvider
         Lobby::observe(LobbyObserver::class);
         Game::observe(GameObserver::class);
         // }
-        
     }
 }

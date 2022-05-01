@@ -8,7 +8,10 @@ use App\Models\Lobby;
 
 class LobbyEvent extends BroadcastingEvent
 {
-    public $channel, $lobby, $type, $message;
+    public $channel;
+    public $lobby;
+    public $type;
+    public $message;
 
     /**
      * Create a new event instance.

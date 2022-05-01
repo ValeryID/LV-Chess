@@ -15,7 +15,9 @@ class LobbyController extends Controller
     {
         $gameState = $lobby->resume();
 
-        if(!$gameState) abort(404);
+        if (!$gameState) {
+            abort(404);
+        }
 
         return response()->json($gameState);
     }
@@ -37,7 +39,9 @@ class LobbyController extends Controller
     {
         $lobbiesCount = $request->user()->leaveLobbies();
 
-        if($lobbiesCount === 0) abort(409);
+        if ($lobbiesCount === 0) {
+            abort(409);
+        }
 
         return response()->json([
             'count' => $lobbiesCount
@@ -46,11 +50,17 @@ class LobbyController extends Controller
 
     public function startLobby(Request $request, Lobby $lobby)
     {
-        if(!Gate::allows('lobby-modify', $lobby)) abort(403);
-        if(!$lobby->isOpen()) abort(409);
+        if (!Gate::allows('lobby-modify', $lobby)) {
+            abort(403);
+        }
+        if (!$lobby->isOpen()) {
+            abort(409);
+        }
 
         $game = $lobby->startGame();
-        if(!$game) abort(400);
+        if (!$game) {
+            abort(400);
+        }
 
         return response($game->getCard());
     }
@@ -59,11 +69,11 @@ class LobbyController extends Controller
     {
         // DB::enableQueryLog();
         // $collection = Lobby::where('public', 'true')
-        // ->where(fn($query) => 
+        // ->where(fn($query) =>
         //     $query->where('status', 'open')
-        //     ->orWhere(fn($query) => 
+        //     ->orWhere(fn($query) =>
         //         $query->where('status', 'started')
-        //         ->whereNull(fn($query) => 
+        //         ->whereNull(fn($query) =>
         //             $query->select('result')
         //             ->from('games')
         //             ->whereColumn('games.lobby_id', 'lobbies.id')
@@ -91,8 +101,12 @@ class LobbyController extends Controller
 
     public function sendChatMessage(Request $request, Lobby $lobby)
     {
-        if(!Gate::allows('lobby-chatting', $lobby)) abort(403);
-        if(!$message = $request->input('message')) abort(400);
+        if (!Gate::allows('lobby-chatting', $lobby)) {
+            abort(403);
+        }
+        if (!$message = $request->input('message')) {
+            abort(400);
+        }
 
         LobbyEvent::dispatch($lobby, 'chatMessage', [
             'name' => htmlentities($request->user()->name),

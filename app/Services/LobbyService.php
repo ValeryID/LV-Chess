@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Lobby;
@@ -14,7 +15,7 @@ class LobbyService
             where CURRENT_TIMESTAMP > users.active_until
         ');
 
-        foreach($unactiveLobbies as $lobbie) {
+        foreach ($unactiveLobbies as $lobbie) {
             $lobbie->close();
         }
 

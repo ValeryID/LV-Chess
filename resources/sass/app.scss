@@ -1,304 +1,306 @@
 // @import url('https://fonts.googleapis.com/css?family=Nunito');
 
-@import 'variables';
+@import "variables";
 
 html {
-	width: 100%;
-	height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
 body {
-	@include font();
-	background-color: $body-background;
-	margin: 0;
-	padding: 0;
-	width: 100%;
-	height: 100%;
+    @include font();
+    background-color: $body-background;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
 }
 
 #app {
-	width: 100%;
-	height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
-::selection { 
-	color:white;
-	background-color: rgb(175, 70, 0); 
+::selection {
+    color: white;
+    background-color: rgb(175, 70, 0);
 }
 
 button {
-	@include clean-font();
-	min-width: 80px;
-	text-align: center;
-	cursor: pointer;
-	border-radius: 6px;
-	padding: 5px;
-	position: relative;
-	margin: 5px 3px 0px 3px;
-	
-	border: $button-border;
-	top: -$button-z-height;
-	box-shadow: 0px $button-z-height  2px 0 rgb(0, 0, 0);
-	@include button-background($button-color-default);
-	//transition: all .16s;
+    @include clean-font();
+    min-width: 80px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 5px;
+    position: relative;
+    margin: 5px 3px 0px 3px;
 
-	&:hover {
-  		$col: $button-color-hover;
-		@include button-background($button-color-hover);
-	}
-	&:focus {
-		@include button-background($button-color-hover);
-		//box-shadow: 0px 0px 6px 0px rgb(255, 255, 255);
-	}
-	&:active {
-		top: 0px;
-		$col: $button-color-active;
-		@include button-background($col);
-		box-shadow: 0px 0px 6px 0px rgb(0, 0, 0) inset;
-	}
-	&:disabled {
-		top: 0px;
-		cursor: default;
-		box-shadow: 0px 0px 6px 0px rgb(0, 0, 0) inset;
-		@include button-background($button-color-disabled);
-	}
+    border: $button-border;
+    top: -$button-z-height;
+    box-shadow: 0px $button-z-height 2px 0 rgb(0, 0, 0);
+    @include button-background($button-color-default);
+    //transition: all .16s;
+
+    &:hover {
+        $col: $button-color-hover;
+        @include button-background($button-color-hover);
+    }
+    &:focus {
+        @include button-background($button-color-hover);
+        //box-shadow: 0px 0px 6px 0px rgb(255, 255, 255);
+    }
+    &:active {
+        top: 0px;
+        $col: $button-color-active;
+        @include button-background($col);
+        box-shadow: 0px 0px 6px 0px rgb(0, 0, 0) inset;
+    }
+    &:disabled {
+        top: 0px;
+        cursor: default;
+        box-shadow: 0px 0px 6px 0px rgb(0, 0, 0) inset;
+        @include button-background($button-color-disabled);
+    }
 }
 
 .app-layout-container {
-	@include app-layout();
-	justify-content: center;
-	align-items: center;
-	width: 100%; 
-	height: 100%;
+    @include app-layout();
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
     max-width: 1500px;
     margin: auto;
 
-	.app-layout-horizontal {
-		@include app-layout();
-		justify-content: center;
-		align-items: center;
-	
-		width: 100%;
-		height: 100%;
-		justify-content: space-between;
-		align-items: stretch;
-		flex-shrink: 1;
-		flex-grow: 1;
-	}
-	
-	.app-layout-vertical {
-		@include app-layout();
-		//flex-grow: 1;
-		flex-shrink: 1;
-		flex-direction: column;
-	
-		width: 25%;
-		//max-width: 600px;
-	}
+    .app-layout-horizontal {
+        @include app-layout();
+        justify-content: center;
+        align-items: center;
 
-	.lobby-list {
-		width: 20%
-	}
+        width: 100%;
+        height: 100%;
+        justify-content: space-between;
+        align-items: stretch;
+        flex-shrink: 1;
+        flex-grow: 1;
+    }
+
+    .app-layout-vertical {
+        @include app-layout();
+        //flex-grow: 1;
+        flex-shrink: 1;
+        flex-direction: column;
+
+        width: 25%;
+        //max-width: 600px;
+    }
+
+    .lobby-list {
+        width: 20%;
+    }
 }
 
 .app-layout-container-small {
-	@include app-layout();
-	justify-content: flex-end;
-	align-items: center;
-	width: 100%;
-	height: 100%;
+    @include app-layout();
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    height: 100%;
 
-	flex-grow: 1;
-	flex-shrink: 1;
-	flex-direction: column;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-direction: column;
 
-	.app-layout-vertical {
-		@include app-layout();
-		flex-direction: column;
-		align-items: stretch;
-		justify-content: center;
-		flex-shrink: 1;
-		flex-grow: 1;
+    .app-layout-vertical {
+        @include app-layout();
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: center;
+        flex-shrink: 1;
+        flex-grow: 1;
 
-		width: 100%;
+        width: 100%;
         max-height: 100%;
-		
-		background-color: black;
-		box-sizing: border-box;
-	}
 
-	.app-layout-controls {
-		@include form-div();
-		@include app-layout();
-		
-		justify-content: center;
-		align-items: center;
-		flex-shrink: 0;
-		flex-grow: 0;
-		flex-wrap: wrap;
+        background-color: black;
+        box-sizing: border-box;
+    }
 
-		padding: 5px;
-		height: auto;
+    .app-layout-controls {
+        @include form-div();
+        @include app-layout();
 
-		border-width: 0px;
-		border-bottom-right-radius: 0;
-		border-bottom-left-radius: 0;
-		background-color: scale-color($form-background-dark, $lightness: -35%);
-		box-shadow: 0px 0px 6px 0px rgb(0, 0, 0);
-		margin-top: 2px;
-		//background-color: $;
-		align-items: stretch;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+        flex-grow: 0;
+        flex-wrap: wrap;
 
-		button {
-			width: auto;
-			margin-top: 0;
-			flex-shrink: 1;
-			flex-grow: 1;
-		}
-	}
+        padding: 5px;
+        height: auto;
 
-	.board-container {
-		width: 100%;
-	}
+        border-width: 0px;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+        background-color: scale-color($form-background-dark, $lightness: -35%);
+        box-shadow: 0px 0px 6px 0px rgb(0, 0, 0);
+        margin-top: 2px;
+        //background-color: $;
+        align-items: stretch;
+
+        button {
+            width: auto;
+            margin-top: 0;
+            flex-shrink: 1;
+            flex-grow: 1;
+        }
+    }
+
+    .board-container {
+        width: 100%;
+    }
 }
 
 .chat {
-	@include form-div();
+    @include form-div();
 
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	align-items: stretch;
-	flex-shrink: 1;
-	flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    flex-shrink: 1;
+    flex-grow: 1;
 
-	padding-bottom: 0;
+    padding-bottom: 0;
 
-	.chat-messages {
-		flex-grow: 1;
+    .chat-messages {
+        flex-grow: 1;
 
-		font: 20px Comic Sans MS, Comic Sans, cursive;
-		box-shadow: 0 0 5px 0px #000 inset;
-		box-sizing: border-box;
-		background-color: $form-background-light;
-		overflow-y: auto;
-		overflow-wrap: break-word;
-		padding: 10px;
-	}
+        font: 20px Comic Sans MS, Comic Sans, cursive;
+        box-shadow: 0 0 5px 0px #000 inset;
+        box-sizing: border-box;
+        background-color: $form-background-light;
+        overflow-y: auto;
+        overflow-wrap: break-word;
+        padding: 10px;
+    }
 
-	.controls-div {
-		display: flex;
-		flex-direction: row;
-		justify-content: flex-end;
-		align-items: center;
-		width: auto;
-		padding: 0px;
+    .controls-div {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        width: auto;
+        padding: 0px;
 
-		flex-shrink: 1;
-		box-sizing: border-box;
-		height: auto;
-		margin-top: 5px;
+        flex-shrink: 1;
+        box-sizing: border-box;
+        height: auto;
+        margin-top: 5px;
 
-		input {
-			@include standart-input();
-			margin-top: 0;
-			min-width: 5px;
-			width: auto;
-			flex-grow: 1;
-		}
-		button {
-			width:auto;
-			flex-grow: 0;
-			margin-left: 10px;
-			margin-top: 0px;
-		}
-	}
+        input {
+            @include standart-input();
+            margin-top: 0;
+            min-width: 5px;
+            width: auto;
+            flex-grow: 1;
+        }
+        button {
+            width: auto;
+            flex-grow: 0;
+            margin-left: 10px;
+            margin-top: 0px;
+        }
+    }
 }
 
 .lobby-list {
-	@include form-div(auto);
+    @include form-div(auto);
 
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	align-items: stretch;
-	flex-shrink: 1;
-	flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    flex-shrink: 1;
+    flex-grow: 1;
 
-	padding-top: 10px;
+    padding-top: 10px;
 
-	.slider-div {
-		min-width: 170px;
-		flex-grow: 1;
-		padding: 10px;
-		overflow-y: scroll;
-		background-color: #8f8f8f;
-		box-shadow: 0 0 6px 0 rgb(0, 0, 0) inset;
-		box-sizing: border-box;
-	}
+    .slider-div {
+        min-width: 170px;
+        flex-grow: 1;
+        padding: 10px;
+        overflow-y: scroll;
+        background-color: #8f8f8f;
+        box-shadow: 0 0 6px 0 rgb(0, 0, 0) inset;
+        box-sizing: border-box;
+    }
 
-	.lobby-list-item {
-		@include font();
-		
-		z-index: 100;
-		position: relative;
-		text-align: left;
-		width: 100%;
-		padding: 5px;
-		margin-bottom: 6px;
-		margin-top: 3px;
-		box-sizing: border-box;
-		
-	}
+    .lobby-list-item {
+        @include font();
+
+        z-index: 100;
+        position: relative;
+        text-align: left;
+        width: 100%;
+        padding: 5px;
+        margin-bottom: 6px;
+        margin-top: 3px;
+        box-sizing: border-box;
+    }
 }
 
 .lobby-form {
-	@include light-dark-div();
+    @include light-dark-div();
 
-	flex-shrink: 0;
-	flex-grow: 0;
+    flex-shrink: 0;
+    flex-grow: 0;
 
-	.light-div {
-		padding-top: 0px;
-		//width: 10%;
-		//margin-left:40%;
-		& > div {
-			width: 98%;
-			height: auto;
-			padding: 1px;
-			margin-top: 7px;
-			outline: rgb(0, 0, 0) solid 1px;
-			background-color: rgba(0, 0, 0, 0.068);
-	
-			label {
-				display: inline;
-				font-weight: bold;
-				line-height: 1.5;
-				vertical-align: middle;
-				margin-left: 3px;
-			}
-	
-			span {
-				display: block;
-				float: right;
-				overflow-wrap: break-word;
-			}
-	
-			select, input {
-				@include standart-input();
-				display: block;
-				float: right;
-			}
-	
-			select, input, span {
-				width: 50%;
-			}
-		}
-	}
+    .light-div {
+        padding-top: 0px;
+        //width: 10%;
+        //margin-left:40%;
+        & > div {
+            width: 98%;
+            height: auto;
+            padding: 1px;
+            margin-top: 7px;
+            outline: rgb(0, 0, 0) solid 1px;
+            background-color: rgba(0, 0, 0, 0.068);
 
-	.controls-div {
+            label {
+                display: inline;
+                font-weight: bold;
+                line-height: 1.5;
+                vertical-align: middle;
+                margin-left: 3px;
+            }
+
+            span {
+                display: block;
+                float: right;
+                overflow-wrap: break-word;
+            }
+
+            select,
+            input {
+                @include standart-input();
+                display: block;
+                float: right;
+            }
+
+            select,
+            input,
+            span {
+                width: 50%;
+            }
+        }
+    }
+
+    .controls-div {
         flex-wrap: wrap;
-		justify-content: center;
+        justify-content: center;
     }
 }
 
@@ -324,65 +326,65 @@ button {
 }
 
 .login-form {
-	@include light-dark-div();
-	flex-shrink: 1;
-	
-	input {
-		@include standart-input();
-		margin-top: 5px;
-	}
+    @include light-dark-div();
+    flex-shrink: 1;
 
-	.dot {
-		display: block;
-		position: relative;
-		top: 12px;
-		left: 0px;
-		margin-left: 10px;
-		margin-right: auto;
-		margin-bottom: 12px;
-  		//order: 2;
-		height: 25px;
-		width: 25px;
-		background-color: #bbb;
-		border-radius: 50%;
-		box-shadow: 0 0 0 2pt rgb(0, 0, 0);
-		display: block;
-	}
+    input {
+        @include standart-input();
+        margin-top: 5px;
+    }
 
-	.dot-active {
-		background-color: rgb(139, 223, 61);
-	}
+    .dot {
+        display: block;
+        position: relative;
+        top: 12px;
+        left: 0px;
+        margin-left: 10px;
+        margin-right: auto;
+        margin-bottom: 12px;
+        //order: 2;
+        height: 25px;
+        width: 25px;
+        background-color: #bbb;
+        border-radius: 50%;
+        box-shadow: 0 0 0 2pt rgb(0, 0, 0);
+        display: block;
+    }
+
+    .dot-active {
+        background-color: rgb(139, 223, 61);
+    }
 }
 
 .board-container {
-	display: flex;
-	flex-direction: column;
-	align-items: stretch;
-	justify-content: center;
-	flex-shrink: 1;
-	flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    flex-shrink: 1;
+    flex-grow: 1;
 
-	margin: auto;
-	width: 45%;
-	height: 100%;
+    margin: auto;
+    width: 45%;
+    height: 100%;
 
-	.board {
-		@include form-div();
+    .board {
+        @include form-div();
 
         display: flex;
         flex-direction: column;
         justify-content: center;
 
-		flex-grow: 1;
-		flex-shrink: 1;
+        flex-grow: 1;
+        flex-shrink: 1;
 
-		$col: rgb(66, 66, 66);
-		background-color: $col;
-		border: 3px solid $col;
+        $col: rgb(66, 66, 66);
+        background-color: $col;
+        border: 3px solid $col;
         padding: 0px;
-		//box-shadow: 0px 0px 26px 0px $col;
+        //box-shadow: 0px 0px 26px 0px $col;
 
-		box-sizing: border-box;
+        box-sizing: border-box;
 
         .canvas-container {
             position: relative;
@@ -400,7 +402,7 @@ button {
             left: 0px;
 
             z-index: 2;
-            
+
             background: rgba(0, 0, 0, 0);
 
             box-sizing: border-box;
@@ -420,22 +422,22 @@ button {
             left: 0px;
 
             z-index: 1;
-		}
+        }
 
         .alert {
             display: flex;
             flex-direction: column;
             justify-content: center;
-            
+
             position: absolute;
             z-index: 3;
             background: rgba(0, 0, 0, 0);
 
             flex-grow: 0;
             flex-shrink: 0;
-            
+
             width: 100%;
-            height: 100%; 
+            height: 100%;
             box-sizing: border-box;
 
             label {
@@ -454,13 +456,13 @@ button {
                 background-color: $background-color;
             }
         }
-	}
+    }
 
     .board.flex-vertical-square {
         flex-direction: column;
 
         canvas {
-            height: auto; 
+            height: auto;
             width: 100%;
         }
     }
@@ -469,25 +471,25 @@ button {
         flex-direction: row;
 
         canvas {
-            height: 100%; 
+            height: 100%;
             width: auto;
         }
     }
 
-	.gameinfo {
-		background-color: scale-color($form-background-dark, $lightness: -35%);
-		padding: 5px;
-		padding-left: 15px;
-		padding-right: 15px;
+    .gameinfo {
+        background-color: scale-color($form-background-dark, $lightness: -35%);
+        padding: 5px;
+        padding-left: 15px;
+        padding-right: 15px;
 
-		font-style: italic;
-		font-size: 23px;
-		color: rgb(54, 54, 54);
-	}
+        font-style: italic;
+        font-size: 23px;
+        color: rgb(54, 54, 54);
+    }
 }
 
 .takes {
-	overflow-x: auto;
-	box-shadow: 0 0 10px 0px #000000 inset;
-	width: 100%;
+    overflow-x: auto;
+    box-shadow: 0 0 10px 0px #000000 inset;
+    width: 100%;
 }

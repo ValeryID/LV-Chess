@@ -36,17 +36,17 @@ class Lobby extends Model implements CardableInterface
             $lobby->save();
             $lobby = $lobby->fresh();
             return $lobby;
-        } catch(\Illuminate\Database\QueryException $e) {
+        } catch (\Illuminate\Database\QueryException $e) {
             return null;
         }
     }
 
     public function leave(User $user): bool
     {
-        switch($user->id) {
+        switch ($user->id) {
             default: return false;
             case $this->host_id: return $this->close();
-            case $this->guest_id: 
+            case $this->guest_id:
                 $this->guest_id = null;
                 return $this->save();
         }
@@ -61,8 +61,12 @@ class Lobby extends Model implements CardableInterface
 
     public function join(User $user): bool
     {
-        if(in_array($user->id, [$this->host_id, $this->guest_id])) return true;
-        if($this->guest_id !== null) return false;
+        if (in_array($user->id, [$this->host_id, $this->guest_id])) {
+            return true;
+        }
+        if ($this->guest_id !== null) {
+            return false;
+        }
         $user->leaveLobbies();
 
         return $this->setGuestUser($user);
@@ -78,7 +82,7 @@ class Lobby extends Model implements CardableInterface
         return User::find($this->guest_id);
     }
 
-    public function playersReady(): bool 
+    public function playersReady(): bool
     {
         return $this->guest_id !== null;
     }
@@ -90,7 +94,7 @@ class Lobby extends Model implements CardableInterface
 
     public function startGame(): ?Game
     {
-        if($this->playersReady() || $this->public === 'false') {
+        if ($this->playersReady() || $this->public === 'false') {
             $game = Game::make($this);
             $this->status = 'started';
             $this->save();
@@ -108,7 +112,7 @@ class Lobby extends Model implements CardableInterface
             $this->guest_id = $user->id;
             $this->save();
             return true;
-        } catch(\Illuminate\Database\QueryException $e) {
+        } catch (\Illuminate\Database\QueryException $e) {
             return false;
         }
     }
@@ -123,15 +127,16 @@ class Lobby extends Model implements CardableInterface
         return in_array($user->id, [$this->guest_id, $this->host_id]);
     }
 
-    public function getCard() 
+    public function getCard()
     {
-        foreach(['host_color', 'id', 'public', 'status', 'time_limit'] 
-        as $prop)
+        foreach (['host_color', 'id', 'public', 'status', 'time_limit']
+        as $prop) {
             $card[$prop] = $this->$prop;
+        }
 
         $card['host'] = ($host = User::find($this->host_id)) ? $host->getCard() : null;
         $card['guest'] = ($guest = User::find($this->guest_id)) ? $guest->getCard() : null;
-            
+
         return $card;
     }
 

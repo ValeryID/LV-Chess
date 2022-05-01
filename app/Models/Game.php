@@ -27,13 +27,15 @@ class Game extends Model implements CardableInterface
         $game->lobby_id = $lobby->id;
         $game->white_player_id = $lobby->host_color === 'w' ? $lobby->host_id : $lobby->guest_id;
         $game->black_player_id = $lobby->host_color === 'b' ? $lobby->host_id : $lobby->guest_id;
-        
+
         return $game->save() ? $game : null;
     }
 
     public function makeMove(string $move): bool
     {
-        if($this->result) return false;
+        if ($this->result) {
+            return false;
+        }
 
         try {
             GameMove::create([
@@ -45,14 +47,16 @@ class Game extends Model implements CardableInterface
             $this->save();
 
             return true;
-        } catch(\Illuminate\Database\QueryException $e) {
+        } catch (\Illuminate\Database\QueryException $e) {
             return false;
         }
     }
 
     public function colorToUser(string $color): ?User
     {
-        if(!in_array($color, ['w', 'b'])) return null;
+        if (!in_array($color, ['w', 'b'])) {
+            return null;
+        }
         return $color === 'w' ? User::find($this->white_player_id) : User::find($this->black_player_id);
     }
 
@@ -62,13 +66,13 @@ class Game extends Model implements CardableInterface
 
         $elapsedTime = 0;
         $color = $this->getPlayerColor($user);
-        for($i = (int)($color === 'b'); $i < $moves->count(); $i += 2) {
+        for ($i = (int)($color === 'b'); $i < $moves->count(); $i += 2) {
             $carbonDate = $moves->get($i)->created_at;
             $carbonDatePrev = $i === 0 ? $this->created_at : $moves->get($i - 1)->created_at;
-            $elapsedTime += $carbonDate->diffInSeconds($carbonDatePrev); 
+            $elapsedTime += $carbonDate->diffInSeconds($carbonDatePrev);
         }
 
-        if($this->isPlayersTurn($user)) {
+        if ($this->isPlayersTurn($user)) {
             $elapsedTime += Carbon::now()->diffInSeconds(($moves->last() ?: $this)->created_at);
         }
 
@@ -77,15 +81,18 @@ class Game extends Model implements CardableInterface
 
     public function victoryReport(User $user, string $color): bool
     {
-        switch($this->getPlayerColor($user)) {
+        switch ($this->getPlayerColor($user)) {
             case 'w': $this->white_player_result = $color; break;
             case 'b': $this->black_player_result = $color; break;
             default: return false;
         }
 
-        if($this->white_player_result !== null && $this->black_player_result !== null) {
-            if($this->white_player_result === $this->black_player_result) $this->result = $color;
-            else $this->result = 'error';
+        if ($this->white_player_result !== null && $this->black_player_result !== null) {
+            if ($this->white_player_result === $this->black_player_result) {
+                $this->result = $color;
+            } else {
+                $this->result = 'error';
+            }
         }
 
         return $this->save();
@@ -108,7 +115,7 @@ class Game extends Model implements CardableInterface
 
     public function timeCheck(User $user): bool
     {
-        if($this->isPlayerTimeOver($user)) {
+        if ($this->isPlayerTimeOver($user)) {
             return $this->playerSurrender($user);
         } else {
             return false;
@@ -117,7 +124,7 @@ class Game extends Model implements CardableInterface
 
     public function isPlayersTurn(User $user): bool
     {
-        return $this->turn === 'w' && $this->white_player_id === $user->id || 
+        return $this->turn === 'w' && $this->white_player_id === $user->id ||
         $this->turn === 'b' && $this->black_player_id === $user->id;
     }
 
@@ -140,7 +147,7 @@ class Game extends Model implements CardableInterface
 
     public function playerSurrender(User $user): bool
     {
-        switch($user->id) {
+        switch ($user->id) {
             case $this->white_player_id: return $this->setResult('b');
             case $this->black_player_id: return $this->setResult('w');
             default: return false;
@@ -149,7 +156,7 @@ class Game extends Model implements CardableInterface
 
     public function getPlayerColor(User $user): ?string
     {
-        switch($user->id) {
+        switch ($user->id) {
             case $this->white_player_id: return 'w';
             case $this->black_player_id: return 'b';
             default: return null;
@@ -172,19 +179,20 @@ class Game extends Model implements CardableInterface
         $moves = $this->moves->sortBy('id');
         $playerMoves = new Collection();
 
-        for($i = (int)($color === 'b'); $i < $moves->count(); $i += 2) {
+        for ($i = (int)($color === 'b'); $i < $moves->count(); $i += 2) {
             $playerMoves->push($moves->get($i));
         }
 
         return $playerMoves;
     }
 
-    public function getCard() 
+    public function getCard()
     {
-        foreach(['id', 'white_player_id', 'black_player_id', 'turn', 'result', 'lobby_id'] 
-        as $prop)
+        foreach (['id', 'white_player_id', 'black_player_id', 'turn', 'result', 'lobby_id']
+        as $prop) {
             $card[$prop] = $this->$prop;
-            
+        }
+
         return $card;
     }
 }

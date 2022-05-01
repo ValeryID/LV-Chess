@@ -30,6 +30,7 @@
     "dependencies": {
         "laravel-echo": "^1.10.0",
         "laravel-mix-alias": "^1.0.3",
+        "prettier": "^2.6.2",
         "pusher-js": "^7.0.3",
         "vuex": "^4.0.0"
     }

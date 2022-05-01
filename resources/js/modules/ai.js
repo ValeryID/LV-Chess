@@ -1,6 +1,7 @@
 export default {
     async getAlgebraicMove(fen) {
         return new Promise((resolve, reject) => {
+ 
             const aiWorker = new Worker(new URL('@/workers/aiWorker.js', import.meta.url))
 
             aiWorker.onmessage = (e) => {

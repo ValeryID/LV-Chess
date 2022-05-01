@@ -9,7 +9,9 @@ use App\Models\Game;
 
 class GameEvent extends BroadcastingEvent
 {
-    public $game, $type, $message;
+    public $game;
+    public $type;
+    public $message;
 
     /**
      * Create a new event instance.

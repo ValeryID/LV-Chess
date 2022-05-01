@@ -19,7 +19,8 @@ class UserController extends Controller
 
     public function ping(Request $request)
     {
-        if($currentUser = $request->user())
+        if ($currentUser = $request->user()) {
             $currentUser->ping();
+        }
     }
 }

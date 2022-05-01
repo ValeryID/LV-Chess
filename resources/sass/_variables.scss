@@ -24,13 +24,13 @@ $button-color-disabled: #bbabab;
 }
 
 @mixin app-layout {
-	display: flex;
-	align-content: center;
-	flex-wrap: nowrap;
-	flex-direction: row;
+    display: flex;
+    align-content: center;
+    flex-wrap: nowrap;
+    flex-direction: row;
 }
 
-@mixin light-div($height, $width:100%) {
+@mixin light-div($height, $width: 100%) {
     $col: $form-background-light;
     background-color: $col;
     border: 3px solid $col;
@@ -44,7 +44,7 @@ $button-color-disabled: #bbabab;
     padding: 5px 10px 10px 10px;
 }
 
-@mixin form-div($height:auto, $width:auto) {
+@mixin form-div($height: auto, $width: auto) {
     @include clean-font();
     $col: $form-background-dark;
     background-color: $col;
@@ -58,9 +58,9 @@ $button-color-disabled: #bbabab;
     overflow: clip;
 }
 
-@mixin light-dark-div($height:auto, $width:auto, $dark-div-height:55px) {
+@mixin light-dark-div($height: auto, $width: auto, $dark-div-height: 55px) {
     @include form-div($height, $width);
-    
+
     .light-div {
         @include light-div($height - $dark-div-height);
     }
@@ -86,7 +86,7 @@ $button-color-disabled: #bbabab;
     padding: 4px;
     padding-left: 8px;
     box-sizing: border-box;
-    transition: all .16s;
+    transition: all 0.16s;
     &:hover {
         background-color: #eaffd7;
     }
@@ -102,7 +102,8 @@ $button-color-disabled: #bbabab;
 
 @mixin button-background($color) {
     background: radial-gradient(
-        circle, 
-        $color 0%, 
-        scale-color($color, $lightness: -5%) 100%);
+        circle,
+        $color 0%,
+        scale-color($color, $lightness: -5%) 100%
+    );
 }

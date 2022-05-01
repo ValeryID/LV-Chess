@@ -1,8 +1,10 @@
+/.vscode/
 /node_modules
 /public/css/
 /public/js/
 /storage/*.key
 /vendor
+_*
 .env.*
 !.env.example
 .phpunit.result.cache

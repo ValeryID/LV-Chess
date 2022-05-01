@@ -16,4 +16,4 @@ COPY --chown=www-data:www-data . /usr/projects/chs
 WORKDIR /usr/projects/chs
 EXPOSE 8000/tcp 8001/tcp 5432/tcp
 RUN echo "" > storage/logs/laravel.log
-CMD ./_run.sh
+CMD ./run.sh

@@ -44,7 +44,7 @@ class ListLobbies extends Command
             Lobby::where('status', $this->argument('status'))->get() :
             Lobby::all();
 
-        $columns = Schema::getColumnListing((new Lobby)->getTable());
+        $columns = Schema::getColumnListing((new Lobby())->getTable());
         $this->table($columns, $lobbies->toArray());
 
         return 0;

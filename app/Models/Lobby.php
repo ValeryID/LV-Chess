@@ -17,6 +17,7 @@ class Lobby extends Model implements CardableInterface
     protected $casts = [
         'host_id' => 'integer',
         'guest_id' => 'integer',
+        'public' => 'string',
     ];
 
     public static function make(User $user, array $params): ?Lobby

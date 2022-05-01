@@ -1,7 +1,7 @@
 <?php
 return [
     'default' => [
-        'public' => true,
+        'public' => 'true',
         'host_color' => 'w',
         'time_limit' => 900
     ]
